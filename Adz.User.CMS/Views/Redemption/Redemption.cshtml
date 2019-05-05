@@ -1,0 +1,174 @@
+﻿@{
+    ViewBag.Title = "Redemption";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(16);
+        $(document).tooltip();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Redemption Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a>Redemption Information</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        if (ViewBag.msg == "a1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Redemption successfully created.
+            </div>
+        }
+        else if (ViewBag.msg == "a2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Create Redemption failed.
+            </div>
+        }
+        else if (ViewBag.msg == "e1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Redemption successfully updated.
+            </div>
+        }
+        else if (ViewBag.msg == "e2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Update Redemption failed.
+            </div>
+        }
+    }
+</div>
+
+<input type="hidden" value="" id="temp" />
+
+@(Html.Kendo().Grid<Adz.User.CMS.Models.RewardModel.Redemption>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        //columns.Bound(p => p.FirstName).Title("First Name");
+        //columns.Bound(p => p.LastName).Title("Last Name");
+        columns.Bound(p => p.UserEmail).Title("Email");
+        columns.Bound(p => p.RewardName);
+        columns.Bound(p => p.RewardPointRequirement).Title("Point Requirement");
+        columns.Bound(p => p.RedemptionDate).Format("{0:dd MMM yyyy}").Title("Redemption Date");
+        columns.Bound(p => p.RedemptionStatusId).HtmlAttributes(new { id = "statusid-#=RedemptionId#" }).Hidden();
+        columns.Bound(p => p.RedemptionStatusName).Title("Status").HtmlAttributes(new { id = "status-#=RedemptionId#" });
+        columns.Bound(p => p.RewardId).ClientTemplate(
+            "<a class='gridBtn' href='../Reward/RewardView?RewardId=#=RewardId#'><span class='fa fa-gift' title='View Reward' ></span></a>&nbsp;&nbsp;" +
+            "|&nbsp;&nbsp;<a class='gridBtn' href='RedemptionView?RedemptionId=#=RedemptionId#'><span class='fa fa-eye' title='View' ></span></a>&nbsp;&nbsp;" +
+            "|&nbsp;&nbsp;<a class='gridBtn' href='RedemptionEdit?RedemptionId=#=RedemptionId#'><span class='fa fa-pencil' title='Edit' ></span></a>&nbsp;&nbsp;" +
+            "|&nbsp;&nbsp;<a class='gridBtn k-button-icontext k-grid-edit'  href='' onclick='update(#=RedemptionId#)'><span class='fa fa-user-md' title='Update' ></span></a>" +
+            "<div id='updatebutton#=RedemptionId#' class='displaynone'><a class='k-button k-button-icontext k-primary k-grid-update' href=''><span class='k-icon k-update'></span>Update</a><a class='k-button k-button-icontext k-grid-cancel' href=''><span class='k-icon k-cancel'></span>Cancel</a></div>" +
+            "").Title("Action").Filterable(filter => filter.Enabled(false)).Width(200);
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .Events(events => events.Error("error_handler").Sync("sync_handler"))
+        .Read(read => read.Action("Redemption_Read", "Redemption"))
+        .Update(update => update.Action("Redemption_Update", "Redemption").Data("additionalData"))
+        .Model(model =>
+        {
+            model.Field(m => m.UserEmail).Editable(false);
+            model.Field(m => m.RewardName).Editable(false);
+            model.Field(m => m.RewardPointRequirement).Editable(false);
+            model.Field(m => m.RedemptionDate).Editable(false);
+            model.Field(m => m.RewardId).Editable(false);
+            model.Id(p => p.RedemptionId);
+        })
+    )
+    //.Events(events => events.DataBound("onDataBound").Change("onChange"))
+    .Filterable(filterable => filterable
+        .Extra(false)
+            .Operators(operators => operators
+            .ForString(str => str.Clear()
+                .StartsWith("Starts with")
+                .Contains("Contains")
+            ))
+    )
+    .Pageable(page => page
+        .Refresh(true)
+        .PageSizes(true)
+    )
+    //.Scrollable(scr => scr.Height(280))
+    .Sortable(sortable => sortable
+        .AllowUnsort(true)
+        .SortMode(GridSortMode.MultipleColumn))
+    //.Groupable()
+    .Resizable(resize => resize.Columns(true))
+    .Reorderable(reorder => reorder.Columns(true))
+    .Events(events => events.Save("update_event"))
+)
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var result = "";
+            var message = "";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message = this;
+                    });
+                }
+            });
+            if (message != "") {
+                result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Error</h4>'
+                + message
+                + '</div>';
+
+                $("#msgbox").html(result);
+            }
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    function update(id) {
+        $('#temp').val($('#statusid-'+id).text());
+        $('#updatebutton' + id).show();
+    }
+
+    function update_event() {
+        $('#temp').val($("#statusDropDown").val());
+    }
+
+    function additionalData() {
+        var NewStatusId = $("#temp").val();
+        $('#temp').val("");
+        return {
+            NewStatusId: NewStatusId
+        };
+    }
+
+    function sync_handler(e) {
+        this.read();
+
+        result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Success!</h4>'
+                + 'Redemption Status successfully updated.'
+                + '</div>';
+        $("#msgbox").append(result);
+    }
+</script>

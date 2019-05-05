@@ -1,0 +1,175 @@
+﻿@model Adz.User.CMS.Models.RewardModel.RedemptionVM
+@{
+    ViewBag.Title = "Redemption View";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script src="@Url.Content("~/Scripts/jquery.fancybox.js")" type="text/javascript"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/fancy/jquery.fancybox.css")">
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(16);
+        $(document).tooltip();
+        $('.fancybox').fancybox();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Redemption Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a href="@Url.Action("Redemption", "Redemption")">Redemption</a> /
+        <a>Redemption View</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        if (ViewBag.msg == "a1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Redemption successfully created.
+            </div>
+        }
+        else if (ViewBag.msg == "a2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Create Redemption failed.
+            </div>
+        }
+        else if (ViewBag.msg == "e1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Redemption successfully updated.
+            </div>
+        }
+        else if (ViewBag.msg == "e2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Update Redemption failed.
+            </div>
+        }
+    }
+</div>
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>View Redemption</h4><hr />
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Personal Information
+                            </div>
+                            <div class="panel-body">
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.UserEmail)</div>
+                                <div class="rightcol">@Model.Redemption.UserEmail</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.RewardName)</div>
+                                <div class="rightcol">@Model.Redemption.RewardName</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.RewardPointRequirement)</div>
+                                <div class="rightcol">@Model.Redemption.RewardPointRequirement</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.Name)</div>
+                                <div class="rightcol">@Model.Redemption.Name</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.RedemptionDate)</div>
+                                <div class="rightcol">@string.Format("{0:dd MMM yyyy}", Model.Redemption.RedemptionDate)</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.RedemptionStatusName)</div>
+                                <div class="rightcol">@Model.Redemption.RedemptionStatusName</div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.Redemption.AddressLine1 != null && Model.Redemption.AddressLine2 != "")
+                    {
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Delivery Information
+                            </div>
+                            <div class="panel-body">
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.AddressLine1)</div>
+                                <div class="rightcol">@Model.Redemption.AddressLine1</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.AddressLine2)</div>
+                                <div class="rightcol">@Model.Redemption.AddressLine2</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.City)</div>
+                                <div class="rightcol">@Model.Redemption.City</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.State)</div>
+                                <div class="rightcol">@Model.Redemption.State</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.Country)</div>
+                                <div class="rightcol">@Model.Redemption.Country</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.PostCode)</div>
+                                <div class="rightcol">@Model.Redemption.PostCode</div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    @if (Model.Redemption.BankName != null && Model.Redemption.BankName != "")
+                    {
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Bank Information
+                            </div>
+                            <div class="panel-body">
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.BankName)</div>
+                                <div class="rightcol">@Model.Redemption.BankName</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.BankAccountNum)</div>
+                                <div class="rightcol">@Model.Redemption.BankAccountNum</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.BankAccountName)</div>
+                                <div class="rightcol">@Model.Redemption.BankAccountName</div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    @if (Model.Redemption.MobileAccNum != null && Model.Redemption.MobileAccNum != "")
+                    {
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Mobile Information
+                            </div>
+                            <div class="panel-body">
+                                <div class="leftcol">@Html.LabelFor(model => model.Redemption.MobileAccNum)</div>
+                                <div class="rightcol">@Model.Redemption.MobileAccNum</div>
+                                @*<div class="leftcol">@Html.LabelFor(model => model.Redemption.MobileOperatorName)</div>
+                                <div class="rightcol">@Model.Redemption.MobileOperatorName</div>*@
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    @if (Model.Review != null)
+                    {
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Review Information
+                            </div>
+                            <div class="panel-body">
+                                <div class="leftcol">@Html.LabelFor(model => model.Review.Message)</div>
+                                <div class="rightcol">@Model.Review.Message</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Review.Rating)</div>
+                                <div class="rightcol">@Model.Review.Rating</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Review.ReviewDate)</div>
+                                <div class="rightcol">@string.Format("{0:dd MMM yyyy}", Model.Review.ReviewDate)</div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    <div class="col-lg-12">
+                        <a href="@Url.Action("RedemptionEdit","Redemption")?RedemptionId=@Model.Redemption.RedemptionId" class="k-button">Edit</a>
+                        <a href="@Url.Action("Redemption", "Redemption")" class="k-button">Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,209 @@
+﻿
+@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(23);
+        $(document).tooltip();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Admin Information <a href="@Url.Action("AdminAdd","Admin")" class="btn btn-default btn-sm"><i class="fa fa-plus-square"></i> <span>Add</span></a></h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a>Admin Information</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        if (ViewBag.msg == "a1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Admin successfully created.
+            </div>
+        }
+        else if (ViewBag.msg == "a2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Create Admin failed.
+            </div>
+        }
+        else if (ViewBag.msg == "e1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Admin successfully updated.
+            </div>
+        }
+        else if (ViewBag.msg == "e2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Update Admin failed.
+            </div>
+        }
+    }
+</div>
+
+<input type="hidden" value="" id="temp" />
+
+@(Html.Kendo().Grid<Adz.User.CMS.Models.AdminModel.Admin>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        //columns.Bound(p => p.FirstName).Title("First Name");
+        //columns.Bound(p => p.LastName).Title("Last Name");
+        columns.Bound(p => p.Email);
+        columns.Bound(p => p.RoleId).HtmlAttributes(new { id = "roleid-#=AdminId#" }).Hidden();
+        columns.Bound(p => p.RoleName).Title("Role").HtmlAttributes(new { id = "role-#=AdminId#" });
+        columns.Bound(p => p.LastAction).ClientTemplate(
+            "<a class='gridBtn' href='AdminView?AdminId=#=AdminId#'><span class='fa fa-eye' title='View' ></span></a>&nbsp;&nbsp;" +
+            "#if(LastAction!='5'){#" +
+            "|&nbsp;&nbsp;<a class='gridBtn' href='AdminEdit?AdminId=#=AdminId#'><span class='fa fa-pencil' title='Edit' ></span></a>&nbsp;&nbsp;" +
+            "|&nbsp;&nbsp;<a class='gridBtn k-button-icontext k-grid-edit'  href='' onclick='update(#=AdminId#)'><span class='fa fa-user-md' title='Update' ></span></a>" +
+            "|&nbsp;&nbsp;<a class='gridBtn k-button-icontext k-grid-delete'  href=''><span class='fa fa-archive' title='Archive' ></span></a>" +
+            //"|&nbsp;&nbsp;<a class='gridBtn'  onclick='Duplicate(#=AdminId#)'><span class='fa fa-files-o' title='Duplicate' ></span></a>" +
+            "<div id='updatebutton#=AdminId#' class='displaynone'><a class='k-button k-button-icontext k-primary k-grid-update' href=''><span class='k-icon k-update'></span>Update</a><a class='k-button k-button-icontext k-grid-cancel' href=''><span class='k-icon k-cancel'></span>Cancel</a></div>" +
+            "#}#").Title("Action").Filterable(filter => filter.Enabled(false)).Width(200);
+    })
+    .Editable(editable => editable.DisplayDeleteConfirmation("Do you want to archive this Admin?"))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .Events(events => events.Error("error_handler").Sync("sync_handler"))
+        .Read(read => read.Action("Admin_Read", "Admin"))
+        .Destroy(destroy => destroy.Action("Admin_Destroy", "Admin"))
+        .Update(update => update.Action("Admin_Update", "Admin").Data("additionalData"))
+        .Model(model =>
+        {
+            model.Field(m => m.FirstName).Editable(false);
+            model.Field(m => m.LastName).Editable(false);
+            model.Field(m => m.Email).Editable(false);
+            model.Field(m => m.LastAction).Editable(false);
+            model.Id(p => p.AdminId);
+        })
+        .Filter(filter => filter.Add(p => p.LastAction).IsNotEqualTo("5"))
+    )
+        //.Events(events => events.DataBound("onDataBound").Change("onChange"))
+    .Filterable(filterable => filterable
+        .Extra(false)
+            .Operators(operators => operators
+            .ForString(str => str.Clear()
+                .StartsWith("Starts with")
+                .Contains("Contains")
+            ))
+    )
+    .Pageable(page => page
+        .Refresh(true)
+        .PageSizes(true)
+    )
+        //.Scrollable(scr => scr.Height(280))
+    .Sortable(sortable => sortable
+        .AllowUnsort(true)
+        .SortMode(GridSortMode.MultipleColumn))
+        //.Groupable()
+    .Resizable(resize => resize.Columns(true))
+    .Reorderable(reorder => reorder.Columns(true))
+    .Events(events => events.Save("update_event"))
+)
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var result = "";
+            var message = "";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message = this;
+                    });
+                }
+            });
+            if (message != "") {
+                result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Error</h4>'
+                + message
+                + '</div>';
+
+                $("#msgbox").html(result);
+            }
+        }
+    }
+
+    function Duplicate(id) {
+        var r = confirm("Confirm duplicate Admin?");
+        if (r == true) {
+            $.post("Admin_Duplicate", { AdminId: id }, function (data) {
+                console.log(data);
+                if (data) {
+                    var result = "";
+                    if (data == "1") {
+                        result = '<div class="alert alert-block alert-success">'
+                                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                                + '<h4 class="alert-heading">Success!</h4>'
+                                + 'Admin successfully duplicated.'
+                                + '</div>';
+                    }
+                    else if (data == "2") {
+                        result = '<div class="alert alert-block alert-danger">'
+                                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                                + '<h4 class="alert-heading">Error</h4>'
+                                + 'Duplicate Admin failed.'
+                                + '</div>';
+                    }
+                    else {
+                        result = '<div class="alert alert-block alert-danger">'
+                                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                                + '<h4 class="alert-heading">Error</h4>'
+                                + $(data).text()
+                                + '</div>';
+                    }
+                    $("#msgbox").html(result);
+                }
+            });
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    function update(id) {
+        $('#temp').val($('#roleid-'+id).text());
+        $('#updatebutton' + id).show();
+    }
+
+    function update_event() {
+        $('#temp').val($("#roleDropDown").val());
+
+        result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Success!</h4>'
+                + 'Admin Role successfully updated.'
+                + '</div>';
+        $("#msgbox").append(result);
+    }
+
+    function additionalData() {
+        var newRoleId = $("#temp").val();
+        $('#temp').val("");
+        return {
+            newRoleId: newRoleId
+        };
+    }
+
+    function sync_handler(e) {
+        this.read();
+    }
+</script>

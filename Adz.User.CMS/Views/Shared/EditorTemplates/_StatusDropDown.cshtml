@@ -1,0 +1,34 @@
+﻿@{
+    Layout = null;
+}
+@using Kendo.Mvc.UI
+
+
+<script type="text/javascript">
+    var value;
+    function onDataBound() {
+        value = $('#temp').val();
+        $('#temp').val("");
+
+        var dropdownlist = $("#statusDropDown").data("kendoDropDownList");
+        dropdownlist.value(value);
+    }
+</script>
+
+@(Html.Kendo().DropDownList()
+    .Name("statusDropDown")
+    .HtmlAttributes(new { @class = "kendoDropdown" })
+    .DataTextField("Name")
+    .DataValueField("Id")
+    .DataSource(source =>
+    {
+        source.Read(read =>
+        {
+            read.Action("RedemptionStatusList", "Redemption");
+        });
+    })
+    .Events(e =>
+    {
+        e.DataBound("onDataBound");
+    })
+)

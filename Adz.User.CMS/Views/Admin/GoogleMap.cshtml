@@ -1,0 +1,42 @@
+﻿@model Adz.User.CMS.Models.CountryModel.Map
+@{
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+}
+
+<script type="text/javascript"
+    src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDBe9tprDB4drAPp-O4-Ypcer1EOvUUvrQ&sensor=true">
+</script>
+
+<div id="map_canvas" style="height: 500px;"></div>
+<script type="text/javascript">
+    $(function () {
+        initializeEditMap();
+    });
+</script> 
+
+<script type="text/javascript">
+    var lat, lng, map;
+    var infowindow = new google.maps.InfoWindow();
+
+    function initializeEditMap() {
+        geocoder = new google.maps.Geocoder();
+        lat = "@Model.Latitude";
+        lng = "@Model.Longitude";
+        var loc = new google.maps.LatLng(lat, lng);
+        var center = new google.maps.LatLng(lat, lng-0.005);
+        var mapOptions = {
+            zoom: 16,
+            center: center,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"),
+				            mapOptions);
+
+        marker = new google.maps.Marker({
+            map: map,
+            draggable: true,
+            animation: google.maps.Animation.DROP,
+            position: loc
+        });
+    }
+</script>

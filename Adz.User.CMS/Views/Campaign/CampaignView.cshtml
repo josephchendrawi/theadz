@@ -1,0 +1,286 @@
+﻿@model Adz.User.CMS.Models.CampaignModel.Campaign
+@{
+    ViewBag.Title = "Campaign View";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script src="@Url.Content("~/Scripts/jquery.fancybox.js")" type="text/javascript"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/fancy/jquery.fancybox.css")">
+<script type="text/javascript">
+    $(document).ready(function () {
+        @if (Model.LastAction != "5") { 
+            <text>changeverticalnav(8);</text>
+        }
+        else
+        {
+            <text>changeverticalnav(9);</text>
+        }
+        $(document).tooltip();
+        $('.fancybox').fancybox();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Campaign Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a href="@Url.Action("Campaign", "Campaign")">Campaign</a> /
+        <a>Campaign View</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        if (ViewBag.msg == "a1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Campaign successfully created.
+            </div>
+        }
+        else if (ViewBag.msg == "a2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Create Campaign failed.
+            </div>
+        }
+        else if (ViewBag.msg == "e1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Campaign successfully updated.
+            </div>
+        }
+        else if (ViewBag.msg == "e2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Update Campaign failed.
+            </div>
+        }
+    }
+</div>
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>View Campaign</h4><hr />
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Personal Information
+                            </div>
+                            <div class="panel-body">
+                                <div class="leftcol">@Html.LabelFor(model => model.Name)</div>
+                                <div class="rightcol">@Model.Name</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Merchant)</div>
+                                <div class="rightcol">@Model.Merchant.Name</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Start)</div>
+                                <div class="rightcol">@string.Format("{0:dd MMM yyyy}", Model.Start)</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.End)</div>
+                                <div class="rightcol">@string.Format("{0:dd MMM yyyy}", Model.End)</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Description)</div>
+                                <div class="rightcol">@Model.Description</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.LinkURL)</div>
+                                <div class="rightcol">@Model.LinkURL</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.SubImageUrl)</div>
+                                <div class="rightcol">
+                                    @{
+                                        var listsuburl = Model.SubImageUrl.Split('|');
+                                        var listsuburllink = Model.SubImageUrlLink.Split('|');
+                                    }
+                                    @for (int i = 0; i < listsuburl.Count(); i++)
+                                    {
+                                        if (listsuburl[i] != "")
+                                        {
+                                            <div class="subimgplace">
+                                                <a class="fancybox" href="@listsuburl[i]">
+                                                    <img src="@listsuburl[i]" class="imgth" />
+                                                </a>
+                                                @*<div class="subimghalf">
+                                                    @listsuburllink[i]
+                                                </div>*@
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Tags
+                            </div>
+                            <div class="panel-body">
+                                Primary Tags
+                                <div>
+                                    @foreach (var v in Model.PrimaryTags)
+                                    {
+                                        <span class="btn btn-sm btn-default">@v.Name</span>
+                                    }
+                                </div>
+                                <br />
+                                Secondary Tags
+                                <div>
+                                    @foreach (var v in Model.SecondaryTags)
+                                    {
+                                        <span class="btn btn-sm btn-default">@v.Name</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Performance
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="leftcol">@Html.LabelFor(model => model.Views)</div>
+                                        <div class="rightcol">@Model.Views</div>
+                                        <div class="leftcol">@Html.LabelFor(model => model.LastView)</div>
+                                        <div class="rightcol">
+                                            @if (Model.LastView != DateTime.MinValue)
+                                            {
+                                                <span>@string.Format("{0:dd MMM yyyy}", Model.LastView)</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                        </div>
+                                        @if (Model.Views > 0)
+                                        {
+                                            <a class="a-hand-cursor" onclick="fancyboxHeatMap(@Model.CampaignId,1)">Views Heat Map</a>
+                                        }
+                                    </div>
+                                    <div class="col-xs-6">
+
+                                        <div class="leftcol">@Html.LabelFor(model => model.Clicks)</div>
+                                        <div class="rightcol">@Model.Clicks</div>
+                                        <div class="leftcol">@Html.LabelFor(model => model.LastClick)</div>
+                                        <div class="rightcol">
+                                            @if (Model.LastClick != DateTime.MinValue)
+                                            {
+                                                <span>@string.Format("{0:dd MMM yyyy}", Model.LastClick)</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                        </div>
+                                        @if (Model.Clicks > 0)
+                                        {
+                                            <a class="a-hand-cursor" onclick="fancyboxHeatMap(@Model.CampaignId,2)">Clicks Heat Map</a>
+                                        }
+                                    </div>
+                                    <div class="col-xs-12">
+                                        @if (Model.Views > 0 || Model.Clicks > 0)
+                                        {
+                                            <br /><br />
+                                            <a href="@Url.Action("AdsPerformanceDetail", "Reporting")?CampaignId=@Model.CampaignId">Details</a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Rules
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Gender</th>
+                                            <th>Number of Views</th>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                            <th>Map</th>
+                                            <th>Days</th>
+                                            <th>Age Group</th>
+                                            <th>Image</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var v in Model.Rules)
+                                        {
+                                            <tr>
+                                                <td>@{if(v.Gender == 1){<text>Male</text>}else if(v.Gender == 2){<text>Female</text>}else if(v.Gender == 3){<text>All</text>}else{<text>-</text>}}</td>
+                                                <td>@v.NumberOfView</td>
+                                                <td>@v.StartTime</td>
+                                                @if (v.NoEnd == false) { 
+                                                    <td>@v.EndTime</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>-</td>
+                                                }
+                                                <td><a class="a-hand-cursor" onclick="fancyboxMap(@v.Latitude, @v.Longitude)">View</a></td>
+                                                <td>
+                                                    @if (v.Monday == true){ <span class="btn btn-sm btn-default">Monday</span> }
+                                                    @if (v.Tuesday == true){ <span class="btn btn-sm btn-default">Tuesday</span> }
+                                                    @if (v.Wednesday == true){ <span class="btn btn-sm btn-default">Wednesday</span> }
+                                                    @if (v.Thursday == true){ <span class="btn btn-sm btn-default">Thursday</span> }
+                                                    @if (v.Friday == true){ <span class="btn btn-sm btn-default">Friday</span> }
+                                                    @if (v.Saturday == true){ <span class="btn btn-sm btn-default">Saturday</span> }
+                                                    @if (v.Sunday == true){ <span class="btn btn-sm btn-default">Sunday</span> }
+                                                </td>
+                                                <td>@if(v.AgeGroupStart != -1 && v.AgeGroupEnd != -1){@v.AgeGroupStart <text>-</text> @(v.AgeGroupEnd == int.MaxValue ? "50+" : v.AgeGroupEnd.ToString())}</td>
+                                                <td>@if(v.Image.ImageId!=0){<a class="fancybox" href="@v.Image.Url"><img src="@v.Image.Url" class="imgth" /></a>}</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        @if (Model.LastAction != "5") {
+                            <a href="@Url.Action("CampaignEdit","Campaign")?CampaignId=@Model.CampaignId" class="k-button">Edit</a>
+                            <a href="@Url.Action("Campaign", "Campaign")" class="k-button">Back</a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("CampaignArchive", "Campaign")" class="k-button">Back</a>
+                        }
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function fancyboxMap(lat, lng) {
+        var parameter = "?lat=" + lat + "&lng=" + lng;
+        $.fancybox.open({
+            href: '@Url.Action("GoogleMap", "Admin")'+parameter,
+            type: 'iframe',
+            padding: 0
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function fancyboxHeatMap(campaign_id, action) {
+        var parameter = "?parameter=" + campaign_id + "|" + action;
+        console.log(parameter);
+        $.fancybox.open({
+            href: '@Url.Action("GoogleHeatMap", "Admin")'+parameter,
+            type: 'iframe',
+            padding: 0
+        });
+    }
+</script>

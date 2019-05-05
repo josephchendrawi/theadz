@@ -1,0 +1,664 @@
+﻿@model Adz.User.CMS.Models.CampaignModel.Campaign
+@{
+    ViewBag.Title = "Campaign Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script src="@Url.Content("~/Scripts/jquery.fancybox.js")" type="text/javascript"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/fancy/jquery.fancybox.css")">
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(8);
+        $(document).tooltip();
+        $('.fancybox').fancybox();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Campaign Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a href="@Url.Action("Campaign", "Campaign")">Campaign</a> /
+        <a>Campaign Edit</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        <div class="alert alert-block alert-danger">
+            <a class="close" data-dismiss="alert" href="#">X</a>
+            <h4 class="alert-heading">Error</h4>
+            @ViewBag.msg
+        </div>
+    }
+</div>
+
+<input type="hidden" value="" id="tempChoose" name="tempChoose" />
+<input type="hidden" value="" id="tempChooseName" name="tempChooseName" />
+<input type="hidden" value="" id="tempChooseUrl" name="tempChooseUrl" />
+<input type="hidden" value="" id="tempChooseDraft" name="tempChooseDraft" />
+
+<input type="hidden" value="" id="tempLatitude" />
+<input type="hidden" value="" id="tempLongitude" />
+
+<input type="hidden" id="tempAddIdx" name="tempAddIdx" value="1" />
+<input type="hidden" id="tempAdd" name="tempAdd" value="" />
+<input type="hidden" id="tempEdit" name="tempEdit" value="" />
+<input type="hidden" id="tempSuccessFlag" name="tempEdit" value="" />
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                @using (Html.BeginForm())
+                {
+                    @Html.HiddenFor(model => model.CampaignId)
+                    for (int i = 0; i < Model.Rules.Count(); i++)
+                    {
+                        @Html.HiddenFor(m => m.Rules[i].RuleId)
+                        @Html.HiddenFor(m => m.Rules[i].Gender)
+                        @Html.HiddenFor(m => m.Rules[i].NumberOfView)
+                        @Html.HiddenFor(m => m.Rules[i].StartTime)
+                        @Html.HiddenFor(m => m.Rules[i].EndTime)
+                        @Html.HiddenFor(m => m.Rules[i].NoEnd)
+                        @Html.HiddenFor(m => m.Rules[i].Latitude)
+                        @Html.HiddenFor(m => m.Rules[i].Longitude)
+                        @Html.HiddenFor(m => m.Rules[i].Monday)
+                        @Html.HiddenFor(m => m.Rules[i].Tuesday)
+                        @Html.HiddenFor(m => m.Rules[i].Wednesday)
+                        @Html.HiddenFor(m => m.Rules[i].Thursday)
+                        @Html.HiddenFor(m => m.Rules[i].Friday)
+                        @Html.HiddenFor(m => m.Rules[i].Saturday)
+                        @Html.HiddenFor(m => m.Rules[i].Sunday)
+                        @Html.HiddenFor(m => m.Rules[i].AgeGroupStart)
+                        @Html.HiddenFor(m => m.Rules[i].AgeGroupEnd)
+                        @Html.HiddenFor(m => m.Rules[i].Image.ImageId)
+                        @Html.HiddenFor(m => m.Rules[i].Image.Url)
+                        @Html.HiddenFor(m => m.Rules[i].Image.Name)
+                    }
+
+                    <input type="hidden" id="tempDelete" name="tempDelete" value="" />
+                    <input type="hidden" id="itemAdd" name="itemAdd" value="" />
+                    <input type="hidden" id="itemEdit" name="itemEdit" value="" />
+
+                    <input type="hidden" id="primtagAdd" name="primtagAdd" value="" />
+                    <input type="hidden" id="primtagDelete" name="primtagDelete" value="" />
+                    <input type="hidden" id="sectagAdd" name="sectagAdd" value="" />
+                    <input type="hidden" id="sectagDelete" name="sectagDelete" value="" />
+
+                    <div class="panel-body">
+                        <h4>Edit Campaign</h4><hr />
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Personal Information
+                                </div>
+                                <div class="panel-body">
+                                    <div class="leftcol">@Html.LabelFor(model => model.Name)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">@Html.TextBoxFor(model => model.Name)@Html.ValidationMessageFor(model => model.Name)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.Merchant)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("merchantDropDown")
+                                        .HtmlAttributes(new { @class = "kendoDropdown" })
+                                        .OptionLabel("--Select Merchant--")
+                                        .DataTextField("Name")
+                                        .DataValueField("MerchantId")
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("MerchantList", "Merchant");
+                                            });
+                                        })
+                                        .Value(Model.Merchant.MerchantId.ToString())
+                                        )
+                                        @Html.ValidationMessage("MerchantNull")
+                                    </div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.Start)</div>
+                                    <div class="rightcol">
+                                        @(Html.Kendo().DatePickerFor(model => model.Start)
+                                        .HtmlAttributes(new {  })
+                                        .Format("dd MMM yyyy")
+                                        )
+                                        @Html.ValidationMessageFor(model => model.Start)
+                                    </div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.End)</div>
+                                    <div class="rightcol">
+                                        @(Html.Kendo().DatePickerFor(model => model.End)
+                                        .HtmlAttributes(new {  })
+                                        .Format("dd MMM yyyy")
+                                        )
+                                        @Html.ValidationMessageFor(model => model.End)
+                                    </div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.Description)</div>
+                                    <div class="rightcol">@Html.TextAreaFor(model => model.Description)@Html.ValidationMessageFor(model => model.Description)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.LinkURL)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">@Html.TextBoxFor(model => model.LinkURL)@Html.ValidationMessageFor(model => model.LinkURL)</div>
+                                    @*<div class="leftcol">@Html.LabelFor(model => model.SubImageUrl)</div>*@
+                                    @Html.HiddenFor(model => model.SubImageId)
+                                    @Html.HiddenFor(model => model.SubImageName)
+                                    @Html.HiddenFor(model => model.SubImageUrl)
+                                    <div class="rightcol" id="subimageplace" style="width: 96%;">
+                                        <input id="subImagebtn" type="button" value="Add Image" class="k-button" /><span class="must-be-filled">*</span>@Html.ValidationMessage("ImageNull")
+                                        @if (Model != null && Model.SubImageId != null)
+                                        {
+                                            var imgid = Model.SubImageId.Split(',');
+                                            var imgname = Model.SubImageName.Split('|');
+                                            var imgurl = Model.SubImageUrl.Split('|');
+                                            //var imgurllink = Model.SubImageUrlLink.Split('|');
+                                            for (int i = 0; i < imgid.Count(); i++)
+                                            {
+                                                if (imgid[i] != "")
+                                                {
+                                                    var str = "subimgprize" + imgid[i];
+                                                    var strimg = "txtSubImg" + imgid[i];
+                                                    <div id="@str" class="subimgplace">
+                                                        <a class="fancybox" style="float:left" href="@imgurl[i]">
+                                                            <img src="@imgurl[i]" class="imgth" />
+                                                        </a>
+                                                        @*<div class="subimghalf">
+                                                            <input id="@strimg" name="@strimg" type="text" class="medium" value="@imgurllink[i]">
+                                                        </div>*@
+                                                        <div class="deleteIconB glyphicon glyphicon-remove-circle" onclick="deleteSubImg(@imgid[i],'@imgname[i]','@imgurl[i]')"></div>
+                                                    </div>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Tags
+                                </div>
+                                <div class="panel-body">
+                                    Primary Tags
+                                    <select id="PrimTagChosen" data-placeholder=" click to choose tag." class="chosen-select" multiple>
+                                        @foreach (var v in Model.PrimaryTags)
+                                        {
+                                            if (v.Selected == true)
+                                            {
+                                                <option value="@v.TagId" selected>@v.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@v.TagId">@v.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                    <br /><br />
+                                    Secondary Tags
+                                    <select id="SecTagChosen" data-placeholder=" click to choose tag." class="chosen-select" multiple>
+                                        @foreach (var v in Model.SecondaryTags)
+                                        {
+                                            if (v.Selected == true)
+                                            {
+                                                <option value="@v.TagId" selected>@v.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@v.TagId">@v.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Rules
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Gender</th>
+                                                <th>Number of Views</th>
+                                                <th>Start</th>
+                                                <th>End</th>
+                                                <th>Map</th>
+                                                <th>Days</th>
+                                                <th>Age Group</th>
+                                                <th>Image</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="rulesTable">
+                                            @foreach (var v in Model.Rules)
+                                            {
+                                                <tr id="row-@v.RuleId">
+                                                    <td><span id="gender-text-@v.RuleId">@{if(v.Gender == 1){<text>Male</text>}else if(v.Gender == 2){<text>Female</text>}else if(v.Gender == 3){<text>All</text>}else{<text>-</text>}}</span><span id="gender-@v.RuleId" class="displaynone">@v.Gender</span></td>
+                                                    <td><span id="nov-@v.RuleId">@v.NumberOfView</span></td>
+                                                    <td><span id="start-@v.RuleId">@v.StartTime</span></td>
+                                                    <td><span id="end-text-@v.RuleId">@{if (v.NoEnd == false){<text>@v.EndTime</text>}else{<text>-</text>}}</span><span id="end-@v.RuleId" class="displaynone">@v.EndTime</span><span id="noend-@v.RuleId" class="displaynone">@v.NoEnd</span></td>
+                                                    <td><a id="fancymap-@v.RuleId" class="a-hand-cursor" onclick="fancyboxMap(@v.Latitude, @v.Longitude)">View</a><span id="latitude-@v.RuleId" class="displaynone">@v.Latitude</span><span id="longitude-@v.RuleId" class="displaynone">@v.Longitude</span></td>
+                                                    <td>
+                                                        <span id="days-@v.RuleId">
+                                                            @if (v.Monday == true)
+                                                            { <span class="btn btn-sm btn-default">Monday</span> }
+                                                            @if (v.Tuesday == true)
+                                                            { <span class="btn btn-sm btn-default">Tuesday</span> }
+                                                            @if (v.Wednesday == true)
+                                                            { <span class="btn btn-sm btn-default">Wednesday</span> }
+                                                            @if (v.Thursday == true)
+                                                            { <span class="btn btn-sm btn-default">Thursday</span> }
+                                                            @if (v.Friday == true)
+                                                            { <span class="btn btn-sm btn-default">Friday</span> }
+                                                            @if (v.Saturday == true)
+                                                            { <span class="btn btn-sm btn-default">Saturday</span> }
+                                                            @if (v.Sunday == true)
+                                                            { <span class="btn btn-sm btn-default">Sunday</span> }
+                                                        </span>
+                                                        <span id="monday-@v.RuleId" class="displaynone">@v.Monday</span>
+                                                        <span id="tuesday-@v.RuleId" class="displaynone">@v.Tuesday</span>
+                                                        <span id="wednesday-@v.RuleId" class="displaynone">@v.Wednesday</span>
+                                                        <span id="thursday-@v.RuleId" class="displaynone">@v.Thursday</span>
+                                                        <span id="friday-@v.RuleId" class="displaynone">@v.Friday</span>
+                                                        <span id="saturday-@v.RuleId" class="displaynone">@v.Saturday</span>
+                                                        <span id="sunday-@v.RuleId" class="displaynone">@v.Sunday</span>
+                                                    </td>
+                                                    <td>
+                                                        <span id="agegroup-@v.RuleId">
+                                                            @if(v.AgeGroupStart != -1 && v.AgeGroupEnd != -1)
+                                                            {
+                                                                @v.AgeGroupStart <text>-</text> @(v.AgeGroupEnd == int.MaxValue ? "50+" : v.AgeGroupEnd.ToString())
+                                                            }
+                                                        </span>
+                                                        <span id="agegroup-start-@v.RuleId" class="displaynone">@v.AgeGroupStart</span>
+                                                        <span id="agegroup-end-@v.RuleId" class="displaynone">@v.AgeGroupEnd</span>
+                                                    </td>
+                                                    <td>
+                                                        <span id="rule-image-@v.RuleId">
+                                                        @if(v.Image.ImageId!=0)
+                                                        {
+                                                            <a class="fancybox" href="@v.Image.Url">
+                                                                <img src="@v.Image.Url" class="imgth" />
+                                                            </a>
+                                                        }
+                                                        </span>
+                                                        <span id="rule-imageid-@v.RuleId" class="displaynone">@v.Image.ImageId</span>
+                                                    </td>                                                    
+                                                    <td>
+                                                        <a class="a-hand-cursor" onclick="updateRule('@v.RuleId')"><span class='fa fa-pencil' title='Edit'></span></a>
+                                                        <a class="a-hand-cursor" onclick="deleteRule('@v.RuleId')"><span class='fa fa-archive' title='Delete'></span></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <div class="k-button" onclick="addRule(@Model.CampaignId)">Add Rule</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <input type="submit" value="Update" class="k-button" onclick="return UpdateConf()" />
+                            <a href="@Url.Action("Campaign","Campaign")" class="k-button">Cancel</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Name").focus();
+        $("#subImagebtn").click(function () {
+            $("#tempChoose").val("");
+            $("#tempChooseUrl").val("");
+            $("#tempChooseName").val("");
+            $.fancybox.open({
+                href: '@Url.Action("ImageCropUpload", "Image")',
+                type: 'iframe',
+                padding: 0,
+                afterClose: function () {
+                    if ($("#tempChoose").val() != "") {
+                        var ch = $("#tempChoose").val().split('|');
+                        var chi = $("#tempChooseName").val().split('|');
+                        var chu = $("#tempChooseUrl").val().split('|');
+                        var html = "";
+                        for (var i = 0; i < ch.length; i++) {
+                            if (ch[i] != '') {
+                                html += '<div id="subimgprize' + ch[i] + '" class="subimgplace"><a  class="fancybox" href="' + chu[i] + '"><img src="' + chu[i] + '" class="imgth" /></a>';
+                                var cho = ch[i] + ",'" + chi[i] + "','" + chu[i] + "'";
+                                //html += ' <div class="subimghalf"><input type="text" class="medium" id="txtSubImg' + ch[i] + '" name="txtSubImg' + ch[i] + '"></div>';
+                                html += ' <div class="deleteIconB glyphicon glyphicon-remove-circle" onclick="deleteSubImg(' + cho + ')"></div></div>';
+                                $("#SubImageId").val($("#SubImageId").val() + "," + ch[i]);
+                                $("#SubImageName").val($("#SubImageName").val() + "|" + chi[i]);
+                                $("#SubImageUrl").val($("#SubImageUrl").val() + "|" + chu[i]);
+                            }
+                        }
+                        $("#subimageplace").append(html);
+                        $("#tempChoose").val("");
+                        $("#tempChooseUrl").val("");
+                        $("#tempChooseName").val("");
+                    }
+                }
+            });
+        });
+    });
+    function deleteSubImg(id, name, url) {
+        $("#subimgprize" + id).remove();
+        var current = $("#SubImageId").val();
+        current = current.replace(id, '');
+        $("#SubImageId").val(current);
+        var currentname = $("#SubImageName").val();
+        currentname = currentname.replace(name, '');
+        $("#SubImageName").val(currentname);
+        var currenturl = $("#SubImageUrl").val();
+        currenturl = currenturl.replace(url, '');
+        $("#SubImageUrl").val(currenturl);
+    }
+
+    function UpdateConf() {
+        var r = confirm("Confirm update Campaign information?");
+        if (r == true) { AddEditToInput(); return true; }
+        else return false;
+    }
+</script>
+
+
+<script type="text/javascript">
+    function fancyboxMap(lat, lng) {
+        var parameter = "?lat=" + lat + "&lng=" + lng;
+        $.fancybox.open({
+            href: '@Url.Action("GoogleMap", "Admin")'+parameter,
+            type: 'iframe',
+            padding: 0
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function updateRule(id) {
+        var parameter = "rid=" + id
+                        + "&gender=" + $('#gender-' + id).html()
+                        + "&nov=" + $('#nov-' + id).html()
+                        + "&start=" + $('#start-' + id).html()
+                        + "&end=" + $('#end-' + id).html()
+                        + "&noend=" + $('#noend-' + id).html()
+                        + "&latitude=" + $('#latitude-' + id).html()
+                        + "&longitude=" + $('#longitude-' + id).html()
+                        + "&monday=" + $('#monday-' + id).html()
+                        + "&tuesday=" + $('#tuesday-' + id).html()
+                        + "&wednesday=" + $('#wednesday-' + id).html()
+                        + "&thursday=" + $('#thursday-' + id).html()
+                        + "&friday=" + $('#friday-' + id).html()
+                        + "&saturday=" + $('#saturday-' + id).html()
+                        + "&sunday=" + $('#sunday-' + id).html()
+                        + "&agegroupstart=" + $('#agegroup-start-' + id).html()
+                        + "&agegroupend=" + $('#agegroup-end-' + id).html()
+                        + "&imageid=" + $('#rule-imageid-' + id).html()
+                        + "&subimageids=" + $('#SubImageId').val()
+                        + "&subimageurls=" + $('#SubImageUrl').val();
+
+        //console.log('@Url.Action("RuleEdit", "Campaign")?' + parameter);
+        $.fancybox.open({
+            href: '@Url.Action("RuleEdit", "Campaign")?'+parameter,
+            type: 'iframe',
+            padding: 0,
+            afterClose: function () {
+                if ($('#tempSuccessFlag').val() == "true") {
+                    var lat = $("#tempLatitude").val();
+                    var lng = $("#tempLongitude").val();
+                    parent.document.getElementById("fancymap-" + id).onclick = function () { fancyboxMap(lat, lng); };
+
+                    $('#tempSuccessFlag').val("");
+                    //console.log($("#tempEdit").val());
+                }
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function addRule(id) {
+        var parameter = "?campaignId=" + id
+                        + "&subimageids=" + $('#SubImageId').val()
+                        + "&subimageurls=" + $('#SubImageUrl').val();
+        $.fancybox.open({
+            href: '@Url.Action("RuleAdd", "Campaign")'+parameter,
+            type: 'iframe',
+            padding: 0,
+            afterClose: function () {
+                //console.log($("#tempAdd").val());
+                //console.log($("#tempAddIdx").val());
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function deleteRule(id) {
+        var r = confirm("Confirm delete this Rule?");
+        if (r == true) {
+            if (id.indexOf("temp") == -1) {
+                if ($("#tempDelete").val() == "") {
+                    $("#tempDelete").val(id);
+                }
+                else {
+                    $("#tempDelete").val($("#tempDelete").val() + "#" + id);
+                }
+            }
+            else {
+                var split = $("#tempAdd").val().split("#");
+                $("#tempAdd").val("");
+                $.each(split, function (index, value) {
+                    if (value != id) {
+                        if ($("#tempAdd").val() == "") {
+                            $("#tempAdd").val(value);
+                        }
+                        else {
+                            $("#tempAdd").val($("#tempAdd").val() + "#" + value);
+                        }
+                    }
+                });
+            }
+            //console.log($("#tempDelete").val());
+
+            $("#row-" + id).remove();
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    function AddEditToInput() {
+        if ($("#tempAdd").val() != "") {
+            var splitAdd = $("#tempAdd").val().split("#");
+            $.each(splitAdd, function (index, id) {
+                var item = $('#gender-' + id).html()
+                        + "$" + $('#nov-' + id).html()
+                        + "$" + $('#start-' + id).html()
+                        + "$" + $('#end-' + id).html()
+                        + "$" + $('#noend-' + id).html()
+                        + "$" + $('#latitude-' + id).html()
+                        + "$" + $('#longitude-' + id).html()
+                        + "$" + $('#monday-' + id).html()
+                        + "$" + $('#tuesday-' + id).html()
+                        + "$" + $('#wednesday-' + id).html()
+                        + "$" + $('#thursday-' + id).html()
+                        + "$" + $('#friday-' + id).html()
+                        + "$" + $('#saturday-' + id).html()
+                        + "$" + $('#sunday-' + id).html()
+                        + "$" + $('#agegroup-start-' + id).html()
+                        + "$" + $('#agegroup-end-' + id).html()
+                        + "$" + $('#rule-imageid-' + id).html();
+
+                if ($("#itemAdd").val() == "") {
+                    $("#itemAdd").val(item);
+                }
+                else {
+                    $("#itemAdd").val($("#itemAdd").val() + "|" + item);
+                }
+            });
+        }
+
+        if ($("#tempEdit").val() != "") {
+            var splitEdit = $("#tempEdit").val().split("#");
+            $.each(splitEdit, function (index, id) {
+                var item = id
+                        + "$" + $('#gender-' + id).html()
+                        + "$" + $('#nov-' + id).html()
+                        + "$" + $('#start-' + id).html()
+                        + "$" + $('#end-' + id).html()
+                        + "$" + $('#noend-' + id).html()
+                        + "$" + $('#latitude-' + id).html()
+                        + "$" + $('#longitude-' + id).html()
+                        + "$" + $('#monday-' + id).html()
+                        + "$" + $('#tuesday-' + id).html()
+                        + "$" + $('#wednesday-' + id).html()
+                        + "$" + $('#thursday-' + id).html()
+                        + "$" + $('#friday-' + id).html()
+                        + "$" + $('#saturday-' + id).html()
+                        + "$" + $('#sunday-' + id).html()
+                        + "$" + $('#agegroup-start-' + id).html()
+                        + "$" + $('#agegroup-end-' + id).html()
+                        + "$" + $('#rule-imageid-' + id).html();
+
+                if ($("#itemEdit").val() == "") {
+                    $("#itemEdit").val(item);
+                }
+                else {
+                    $("#itemEdit").val($("#itemEdit").val() + "|" + item);
+                }
+            });
+        }
+    }
+</script>
+
+<script src="@Url.Content("~/Scripts/chosen.jquery.js")" type="text/javascript"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/chosen.css")" />
+<script type="text/javascript">
+    $('#PrimTagChosen').chosen({
+        allow_single_deselect: true,
+        width: "100%",
+    });
+    $('#SecTagChosen').chosen({
+        allow_single_deselect: true,
+        width: "100%",
+    });
+
+    $('#PrimTagChosen').on('change', function (evt, params) {
+        if (params.selected != null) {
+            var deleteInDelete = 0;
+            var primtagDelete = $("#primtagDelete").val().split("|");
+            $('#primtagDelete').val("");
+            $.each(primtagDelete, function (index, id) {
+                if (id == params.selected) {
+                    deleteInDelete = id;
+                }
+                else {
+                    if ($('#primtagDelete').val() == "") {
+                        $('#primtagDelete').val(id);
+                    }
+                    else {
+                        $('#primtagDelete').val($('#primtagDelete').val() + '|' + id);
+                    }
+                }
+            });
+
+            if (deleteInDelete == 0) {
+                if ($('#primtagAdd').val() == "") {
+                    $('#primtagAdd').val(params.selected);
+                }
+                else {
+                    $('#primtagAdd').val($('#primtagAdd').val() + '|' + params.selected);
+                }
+            }
+        }
+        else if (params.deselected != null) {
+            var deleteInAdd = 0;
+            var primtagAdd = $("#primtagAdd").val().split("|");
+            $('#primtagAdd').val("");
+            $.each(primtagAdd, function (index, id) {
+                if (id == params.deselected) {
+                    deleteInAdd = id;
+                }
+                else {
+                    if ($('#primtagAdd').val() == "") {
+                        $('#primtagAdd').val(id);
+                    }
+                    else {
+                        $('#primtagAdd').val($('#primtagAdd').val() + '|' + id);
+                    }
+                }
+            });
+
+            if (deleteInAdd == 0) {
+                if ($('#primtagDelete').val() == "") {
+                    $('#primtagDelete').val(params.deselected);
+                }
+                else {
+                    $('#primtagDelete').val($('#primtagDelete').val() + '|' + params.deselected);
+                }
+            }
+        }
+
+        console.log($('#primtagAdd').val() + " # " + $('#primtagDelete').val());
+    });
+
+    $('#SecTagChosen').on('change', function (evt, params) {
+        if (params.selected != null) {
+            var deleteInDelete = 0;
+            var sectagDelete = $("#sectagDelete").val().split("|");
+            $('#sectagDelete').val("");
+            $.each(sectagDelete, function (index, id) {
+                if (id == params.selected) {
+                    deleteInDelete = id;
+                }
+                else {
+                    if ($('#sectagDelete').val() == "") {
+                        $('#sectagDelete').val(id);
+                    }
+                    else {
+                        $('#sectagDelete').val($('#sectagDelete').val() + '|' + id);
+                    }
+                }
+            });
+
+            if (deleteInDelete == 0) {
+                if ($('#sectagAdd').val() == "") {
+                    $('#sectagAdd').val(params.selected);
+                }
+                else {
+                    $('#sectagAdd').val($('#sectagAdd').val() + '|' + params.selected);
+                }
+            }
+        }
+        else if (params.deselected != null) {
+            var deleteInAdd = 0;
+            var sectagAdd = $("#sectagAdd").val().split("|");
+            $('#sectagAdd').val("");
+            $.each(sectagAdd, function (index, id) {
+                if (id == params.deselected) {
+                    deleteInAdd = id;
+                }
+                else {
+                    if ($('#sectagAdd').val() == "") {
+                        $('#sectagAdd').val(id);
+                    }
+                    else {
+                        $('#sectagAdd').val($('#sectagAdd').val() + '|' + id);
+                    }
+                }
+            });
+
+            if (deleteInAdd == 0) {
+                if ($('#sectagDelete').val() == "") {
+                    $('#sectagDelete').val(params.deselected);
+                }
+                else {
+                    $('#sectagDelete').val($('#sectagDelete').val() + '|' + params.deselected);
+                }
+            }
+        }
+
+        console.log($('#sectagAdd').val() + " # " + $('#sectagDelete').val());
+    });
+</script>

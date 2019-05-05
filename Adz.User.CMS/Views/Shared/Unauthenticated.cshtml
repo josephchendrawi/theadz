@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewBag.Title = "Unauthenticated";
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+}
+
+<script type="text/javascript">
+    window.location.href = "@Url.Action("Login","Admin")";
+    parent.window.location = "@Url.Action("Login","Admin")";
+</script>

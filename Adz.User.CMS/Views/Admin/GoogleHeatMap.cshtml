@@ -1,0 +1,75 @@
+﻿@model Adz.User.CMS.Models.CampaignModel.CampaignHeatMap
+@{
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+}
+
+<script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false">
+</script>
+
+<div id="map_canvas" style="height: 500px;"></div>
+<script type="text/javascript">
+    $(function () {
+        initializeEditMap();
+    });
+</script> 
+
+<script type="text/javascript">
+    var lat, lng, map;
+    var infowindow = new google.maps.InfoWindow();
+
+    function initializeEditMap() {
+        var heatmapData = [
+          @{
+              var minLat = Model.LatLng[0].Latitude;
+              var maxLat = Model.LatLng[0].Latitude;
+              var minLng = Model.LatLng[0].Longitude;
+              var maxLng = Model.LatLng[0].Longitude;
+              foreach (var v in Model.LatLng)
+              {
+                  if (minLat > v.Latitude)
+                  {
+                      minLat = v.Latitude;
+                  }
+                  else if (maxLat < v.Latitude)
+                  {
+                      maxLat = v.Latitude;
+                  }
+
+                  if (minLng > v.Longitude)
+                  {
+                      minLng = v.Longitude;
+                  }
+                  else if (maxLng < v.Longitude)
+                  {
+                      maxLng = v.Longitude;
+                  }
+                  <text>new google.maps.LatLng(@v.Latitude, @v.Longitude),</text>
+              }
+          }
+        ];
+
+        @{
+            var centerLat = (maxLat + minLat) / 2;
+            var centerLng = (maxLng + minLng) / 2;
+        }
+                
+        var centerLat = @centerLat;
+        var centerLng = @centerLng;
+        
+        console.log(centerLat + " " + centerLng);
+        
+        var centerLatLng = new google.maps.LatLng(centerLat, centerLng-0.045);
+
+        map = new google.maps.Map(document.getElementById('map_canvas'), {
+            center: centerLatLng,
+            zoom: 13,
+            mapTypeId: google.maps.MapTypeId.SATELLITE
+        });
+
+        var heatmap = new google.maps.visualization.HeatmapLayer({
+            data: heatmapData
+        });
+        heatmap.setMap(map);
+    }
+</script>

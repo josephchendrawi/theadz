@@ -1,0 +1,120 @@
+﻿@model Adz.User.CMS.Models.AdminModel.AdminAccess
+@{
+    ViewBag.Title = "Admin Role Access Add";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script src="@Url.Content("~/Scripts/jquery.fancybox.js")" type="text/javascript"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/fancy/jquery.fancybox.css")">
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(24);
+        $(document).tooltip();
+        $('.fancybox').fancybox();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Admin Role Access Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a href="@Url.Action("Admin", "Admin")">Admin</a> /
+        <a>Admin Role Access Add</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        <div class="alert alert-block alert-danger">
+            <a class="close" data-dismiss="alert" href="#">X</a>
+            <h4 class="alert-heading">Error</h4>
+            @ViewBag.msg
+        </div>
+    }
+</div>
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                @using (Html.BeginForm())
+                {
+                    @Html.HiddenFor(model => model.ModuleId)
+                    @Html.HiddenFor(model => model.RoleId)
+
+                    <div class="panel-body">
+                        <h4>Add Admin</h4><hr />
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Personal Information
+                                </div>
+                                <div class="panel-body">
+                                    <div class="leftcol">@Html.LabelFor(model => model.RoleName)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("roleDropDown")
+                                        .HtmlAttributes(new { @class = "kendoDropdown" })
+                                        .OptionLabel("--Select Role--")
+                                        .DataTextField("RoleName")
+                                        .DataValueField("RoleId")
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("RoleList", "Admin");
+                                            });
+                                        })
+                                        .Value(Model.RoleId.ToString())
+                                        )
+                                        @Html.ValidationMessage("RoleNull")
+                                    </div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.ModuleName)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("moduleDropDown")
+                                        .HtmlAttributes(new { @class = "kendoDropdown" })
+                                        .OptionLabel("--Select Module--")
+                                        .DataTextField("ModuleName")
+                                        .DataValueField("ModuleId")
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("ModuleList", "Admin");
+                                            });
+                                        })
+                                        .Value(Model.ModuleId.ToString())
+                                        )
+                                        @Html.ValidationMessage("ModuleNull")
+                                    </div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.is_viewable) @Html.CheckBoxFor(model => model.is_viewable)@Html.ValidationMessageFor(model => model.is_viewable)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.is_editable) @Html.CheckBoxFor(model => model.is_editable)@Html.ValidationMessageFor(model => model.is_editable)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.is_addable) @Html.CheckBoxFor(model => model.is_addable)@Html.ValidationMessageFor(model => model.is_addable)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.is_deleteable) @Html.CheckBoxFor(model => model.is_deleteable)@Html.ValidationMessageFor(model => model.is_deleteable)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <input type="submit" value="Add" class="k-button" onclick="return AddConf()" />
+                            <a href="@Url.Action("AdminRole","Admin")" class="k-button">Cancel</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Name").focus();
+    });
+
+    function AddConf() {
+        var r = confirm("Confirm Add Admin Role Access information?");
+        if (r == true) { return true; }
+        else return false;
+    }
+</script>

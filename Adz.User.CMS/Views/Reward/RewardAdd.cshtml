@@ -1,0 +1,209 @@
+﻿@model Adz.User.CMS.Models.RewardModel.Reward
+@{
+    ViewBag.Title = "Reward Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script src="@Url.Content("~/Scripts/jquery.fancybox.js")" type="text/javascript"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/fancy/jquery.fancybox.css")">
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(13);
+        $(document).tooltip();
+        $('.fancybox').fancybox();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Reward Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a href="@Url.Action("Reward", "Reward")">Reward</a> /
+        <a>Reward Create</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        <div class="alert alert-block alert-danger">
+            <a class="close" data-dismiss="alert" href="#">X</a>
+            <h4 class="alert-heading">Error</h4>
+            @ViewBag.msg
+        </div>
+    }
+</div>
+
+<input type="hidden" value="" id="tempChoose" name="tempChoose" />
+<input type="hidden" value="" id="tempChooseName" name="tempChooseName" />
+<input type="hidden" value="" id="tempChooseUrl" name="tempChooseUrl" />
+<input type="hidden" value="" id="tempChooseDraft" name="tempChooseDraft" />
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                @using (Html.BeginForm())
+                {
+                    @Html.HiddenFor(model => model.RewardId)
+                    @Html.HiddenFor(model => model.RewardCriteria.CriteriaId)
+                    @Html.HiddenFor(model => model.RewardType.RewardTypeId)
+
+                    <div class="panel-body">
+                        <h4>Create Reward</h4><hr />
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Personal Information
+                                </div>
+                                <div class="panel-body">
+                                    <div class="leftcol">@Html.LabelFor(model => model.SponsorName)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">@Html.TextBoxFor(model => model.SponsorName)@Html.ValidationMessageFor(model => model.SponsorName)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.SubTitle)</div>
+                                    <div class="rightcol">@Html.TextBoxFor(model => model.SubTitle)@Html.ValidationMessageFor(model => model.SubTitle)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.Description)</div>
+                                    <div class="rightcol">@Html.TextAreaFor(model => model.Description)@Html.ValidationMessageFor(model => model.Description)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.RewardCriteria)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("criteriaDropDown")
+                                        .HtmlAttributes(new { @class = "kendoDropdown" })
+                                        .OptionLabel("--Select Criteria--")
+                                        .DataTextField("Name")
+                                        .DataValueField("CriteriaId")
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("CriteriaList", "Reward");
+                                            });
+                                        })
+                                        .Value(Model.RewardCriteria.CriteriaId.ToString())
+                                        )
+                                        @Html.ValidationMessage("CriteriaNull")
+                                    </div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.RewardType)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("RewardTypeDropDown")
+                                        .HtmlAttributes(new { @class = "kendoDropdown" })
+                                        .OptionLabel("--Select RewardType--")
+                                        .DataTextField("RewardTypeName")
+                                        .DataValueField("RewardTypeId")
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("RewardTypeList", "Reward");
+                                            });
+                                        })
+                                        .Value(Model.RewardType.RewardTypeId.ToString())
+                                        )
+                                        @Html.ValidationMessage("RewardTypeNull")
+                                    </div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.PointRequirement)</div>
+                                    <div class="rightcol">@Html.EditorFor(model => model.PointRequirement)@Html.ValidationMessageFor(model => model.PointRequirement)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.OneTimeFlag)</div>
+                                    @Html.CheckBoxFor(model => model.OneTimeFlag) <label for="OneTimeFlag" style="font-weight: normal">User can redeem once only?</label>
+                                    <div class="leftcol">@Html.LabelFor(model => model.NumberOfStock)</div>
+                                    <div class="rightcol">@Html.EditorFor(model => model.NumberOfStock) (0 = Unlimited) @Html.ValidationMessageFor(model => model.PointRequirement)</div>
+
+                                    <div class="line-light"></div>
+
+                                    @*<div class="leftcol">@Html.LabelFor(model => model.SubImageUrl)</div>*@
+                                    @Html.HiddenFor(model => model.SubImageId)
+                                    @Html.HiddenFor(model => model.SubImageName)
+                                    @Html.HiddenFor(model => model.SubImageUrl)
+                                    <div class="rightcol" id="subimageplace">
+                                        <input id="subImagebtn" type="button" value="Add Image" class="k-button" /><span class="must-be-filled">*</span>@Html.ValidationMessage("ImageNull")
+                                        @if (Model != null && Model.SubImageId != null)
+                                        {
+                                            var imgid = Model.SubImageId.Split(',');
+                                            var imgname = Model.SubImageName.Split('|');
+                                            var imgurl = Model.SubImageUrl.Split('|');
+                                            for (int i = 0; i < imgid.Count(); i++)
+                                            {
+                                                if (imgid[i] != "")
+                                                {
+                                                    var str = "subimgprize" + imgid[i];
+                                                    var strimg = "txtSubImg" + imgid[i];
+                                                    <div id="@str" class="subimgplace">
+                                                        <a class="fancybox" style="float:left" href="@imgurl[i]">
+                                                            <img src="@imgurl[i]" class="imgth" />
+                                                        </a>
+                                                        <div class="deleteIconB glyphicon glyphicon-remove-circle" onclick="deleteSubImg(@imgid[i],'@imgname[i]','@imgurl[i]')"></div>
+                                                    </div>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <input type="submit" value="Update" class="k-button" onclick="return UpdateConf()" />
+                            <a href="@Url.Action("Reward","Reward")" class="k-button">Cancel</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Name").focus();
+        $("#subImagebtn").click(function () {
+            $("#tempChoose").val("");
+            $("#tempChooseUrl").val("");
+            $("#tempChooseName").val("");
+            $.fancybox.open({
+                href: '@Url.Action("ImageMulti", "Image")',
+                type: 'iframe',
+                padding: 0,
+                afterClose: function () {
+                    if ($("#tempChoose").val() != "") {
+                        var ch = $("#tempChoose").val().split('|');
+                        var chi = $("#tempChooseName").val().split('|');
+                        var chu = $("#tempChooseUrl").val().split('|');
+                        var html = "";
+                        for (var i = 0; i < ch.length; i++) {
+                            if (ch[i] != '') {
+                                html += '<div id="subimgprize' + ch[i] + '" class="subimgplace"><a  class="fancybox" href="' + chu[i] + '"><img src="' + chu[i] + '" class="imgth" /></a>';
+                                var cho = ch[i] + ",'" + chi[i] + "','" + chu[i] + "'";
+                                //html += ' <div class="subimghalf"><input type="text" class="medium" id="txtSubImg' + ch[i] + '" name="txtSubImg' + ch[i] + '"></div>';
+                                html += ' <div class="deleteIconB glyphicon glyphicon-remove-circle" onclick="deleteSubImg(' + cho + ')"></div></div>';
+                                $("#SubImageId").val($("#SubImageId").val() + "," + ch[i]);
+                                $("#SubImageName").val($("#SubImageName").val() + "|" + chi[i]);
+                                $("#SubImageUrl").val($("#SubImageUrl").val() + "|" + chu[i]);
+                            }
+                        }
+                        $("#subimageplace").append(html);
+                        $("#tempChoose").val("");
+                        $("#tempChooseUrl").val("");
+                        $("#tempChooseName").val("");
+                    }
+                }
+            });
+        });
+    });
+    function deleteSubImg(id, name, url) {
+        $("#subimgprize" + id).remove();
+        var current = $("#SubImageId").val();
+        current = current.replace(id, '');
+        $("#SubImageId").val(current);
+        var currentname = $("#SubImageName").val();
+        currentname = currentname.replace(name, '');
+        $("#SubImageName").val(currentname);
+        var currenturl = $("#SubImageUrl").val();
+        currenturl = currenturl.replace(url, '');
+        $("#SubImageUrl").val(currenturl);
+    }
+
+    function UpdateConf() {
+        var r = confirm("Confirm update Reward information?");
+        if (r == true) { return true; }
+        else return false;
+    }
+</script>

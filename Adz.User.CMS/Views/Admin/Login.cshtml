@@ -1,0 +1,86 @@
+﻿@model Adz.User.CMS.Models.AdminLoginModel
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+}
+
+<h2 class="text-center">Login</h2>
+<br />
+@using (Html.BeginForm())
+{@Html.AntiForgeryToken()
+<div class="container" id="loginform">
+    <div class="row">
+        <div class="col-sm-4 center-block" style="float:none">
+            <div class="row form-group">
+                <div class="col-sm-4">
+                    @Html.LabelFor(model => model.UserName, new { @class = "login-label" })
+                </div>
+                <div class="col-sm-8">
+                    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.UserName)
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-4">
+                    @Html.LabelFor(model => model.Password, new { @class = "login-label" })
+                </div>
+                <div class="col-sm-8">
+                    @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-8">
+                    @Html.CheckBoxFor(model => model.RememberMe)
+                    @Html.LabelFor(model => model.RememberMe)
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-8">
+                    <button class="btn btn-success" type="submit">Log In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        if ("@ViewBag.Error" != "") {
+            $("#warningModal").modal('show');
+        }
+    });
+</script>
+
+<!-- Modal HTML -->
+<div id="warningModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Warning</h4>
+            </div>
+            <div class="modal-body">
+                <p>@ViewBag.Error</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .field-validation-error {
+        position: absolute;
+        left: 300px;
+        top: 0px;
+        z-index: 99;
+        width: 170px;
+    }
+</style>

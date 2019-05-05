@@ -1,0 +1,79 @@
+﻿@model Adz.User.CMS.Models.CampaignModel.Tag
+@{
+    ViewBag.Title = "Create Tag";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script src="@Url.Content("~/Scripts/jquery.fancybox.js")" type="text/javascript"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/fancy/jquery.fancybox.css")">
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(10);
+        $(document).tooltip();
+        $('.fancybox').fancybox();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Tag Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a href="@Url.Action("Tag", "Campaign")">Tag</a> /
+        <a>Create Tag</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        <div class="alert alert-block alert-danger">
+            <a class="close" data-dismiss="alert" href="#">X</a>
+            <h4 class="alert-heading">Error</h4>
+            @ViewBag.msg
+        </div>
+    }
+</div>
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                @using (Html.BeginForm())
+                {
+                    @Html.HiddenFor(model => model.TagId)
+                    
+                    <div class="panel-body">
+                        <h4>Create Tag</h4><hr />
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Personal Information
+                                </div>
+                                <div class="panel-body">
+                                    <div class="leftcol">@Html.LabelFor(model => model.Name)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">@Html.TextBoxFor(model => model.Name)@Html.ValidationMessageFor(model => model.Name)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <input type="submit" value="Create" class="k-button" onclick="return UpdateConf()" />
+                            <a href="@Url.Action("Tag","Campaign")" class="k-button">Cancel</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Name").focus();
+    });
+
+    function UpdateConf() {
+        var r = confirm("Confirm create this Tag?");
+        if (r == true) { return true; }
+        else return false;
+    }
+</script>

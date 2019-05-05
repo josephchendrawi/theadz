@@ -1,0 +1,15 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+}
+
+@if (ViewBag.ImageId != 0 && ViewBag.ImageName != "" && ViewBag.ImageURL != "") { 
+<script>
+    $(document).ready(function () {
+        parent.document.getElementById("tempChoose").value = "@ViewBag.ImageId";
+        parent.document.getElementById("tempChooseName").value = "@ViewBag.ImageName";
+        parent.document.getElementById("tempChooseUrl").value = "@ViewBag.ImageURL";
+        parent.$.fancybox.close();
+    });
+</script>
+}

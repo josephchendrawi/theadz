@@ -1,0 +1,35 @@
+﻿
+@{
+    Layout = null;
+}
+@using Kendo.Mvc.UI
+
+
+<script type="text/javascript">
+    var value;
+    function onDataBound() {
+        value = $('#temp').val();
+        $('#temp').val("");
+
+        var dropdownlist = $("#roleDropDown").data("kendoDropDownList");
+        dropdownlist.value(value);
+    }
+</script>
+
+@(Html.Kendo().DropDownList()
+    .Name("roleDropDown")
+    .HtmlAttributes(new { @class = "kendoDropdown" })
+    .DataTextField("RoleName")
+    .DataValueField("RoleId")
+    .DataSource(source =>
+    {
+        source.Read(read =>
+        {
+            read.Action("RoleList", "Admin");
+        });
+    })
+    .Events(e =>
+    {
+        e.DataBound("onDataBound");
+    })
+)

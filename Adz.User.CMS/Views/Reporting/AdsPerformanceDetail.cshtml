@@ -1,0 +1,375 @@
+﻿@{
+    ViewBag.Title = "Ads Performance/Usage";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(20);
+        $(document).tooltip();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Ads Performance/Usage Detail</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a>Ads Performance/Usage/Detail</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        <div class="alert alert-block alert-danger">
+            <a class="close" data-dismiss="alert" href="#">X</a>
+            <h4 class="alert-heading">Error</h4>
+            @ViewBag.msg
+        </div>
+    }
+</div>
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-lg-6">
+                        <div class="chart-wrapper">
+                            @(Html.Kendo().Chart<Adz.User.CMS.Models.CampaignModel.CampaignPieChart>()
+                            .Name("chart-gender")
+                            .Title(title => title
+                                .Text("Gender Chart")
+                                .Position(ChartTitlePosition.Top))
+                            .Legend(legend => legend
+                                .Visible(false)
+                            )
+                            .DataSource(ds =>
+                            {
+                                ds.Read(read => read.Action("AdsPerformanceUsageDetailGenderPie_Read", "Reporting", new { CampaignId = ViewBag.CampaignId }));
+                            }
+                            )
+                            .Series(series => series
+                                .Pie(model => model.Value, model => model.Category, model => model.Color)
+                                .Labels(labels => labels
+                                    .Template("#= category #: #= kendo.format('{0:P}', percentage)#")
+                                    .Background("transparent")
+                                    .Visible(true)
+                                )
+                                .StartAngle(150)
+                            )
+                            .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Format("{0:N0}")
+                                .Template("#= value # user(s) ")
+                            )
+                            )
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="chart-wrapper">
+                            @(Html.Kendo().Chart<Adz.User.CMS.Models.CampaignModel.CampaignPieChart>()
+                            .Name("chart-age")
+                            .Title(title => title
+                                .Text("Age Group Chart")
+                                .Position(ChartTitlePosition.Top))
+                            .Legend(legend => legend
+                                .Visible(false)
+                            )
+                            .DataSource(ds =>
+                            {
+                                ds.Read(read => read.Action("AdsPerformanceUsageDetailAgePie_Read", "Reporting", new { CampaignId = ViewBag.CampaignId }));
+                            }
+                            )
+                            .Series(series => series
+                                .Pie(model => model.Value, model => model.Category, model => model.Color)
+                                .Labels(labels => labels
+                                    .Template("#= category #: #= kendo.format('{0:P}', percentage)#")
+                                    .Background("transparent")
+                                    .Visible(true)
+                                )
+                                .StartAngle(150)
+                            )
+                            .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Format("{0:N0}")
+                                .Template("#= value # user(s) ")
+                            )
+                            )
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">                    
+                    <div class="col-md-6">
+                        <div class="chart-wrapper">
+                            @(Html.Kendo().Chart<Adz.User.CMS.Models.CampaignModel.CampaignBarChart>()
+                            .Name("chart-gender-5555")
+                            .Title(title => title
+                            .Text("Total Views & CTR % by Gender")
+                            .Position(ChartTitlePosition.Top))
+                            .Legend(legend => legend
+                                .Visible(false)
+                            )
+                            .DataSource(ds =>
+                            {
+                                ds.Read(read => read.Action("GenderTotalViewAndCTRByCampaign_Read", "Reporting", new { CampaignId = ViewBag.CampaignId }));
+                            }
+                            )
+                            .Series(series =>
+                            {
+                                series.Column(model => model.Value2, model => model.Color).Name("Total Views").Axis("axis1");
+                                series.Line(model => model.Value).Name("CTR %").Color("#e74c3c").Axis("axis3");
+                            })
+                            .CategoryAxis(axis => axis
+                                .Categories(model => model.Category)
+                                .Crosshair(c => c.Visible(true))
+                                .AxisCrossingValue(0, 10)
+                            )
+                            .ValueAxis(axis => axis
+                                .Numeric("axis1")
+                                .Title("Total Views")
+                            )
+                            .ValueAxis(axis => axis
+                                .Numeric("axis3")
+                                .Title("CTR %")
+                            )
+                            .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Shared(true)
+                                .Format("{0:N0}")
+                                .Template("#= value #")
+                            )
+                            )
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-wrapper">
+                            @(Html.Kendo().Chart<Adz.User.CMS.Models.CampaignModel.CampaignBarChart>()
+                            .Name("chart-weekdays")
+                            .Title(title => title
+                            .Text("Total Views & CTR % by Weekdays")
+                            .Position(ChartTitlePosition.Top))
+                            .Legend(legend => legend
+                                .Visible(false)
+                            )
+                            .DataSource(ds =>
+                            {
+                                ds.Read(read => read.Action("WeekdaysTotalViewAndCTRByCampaign_Read", "Reporting", new { CampaignId = ViewBag.CampaignId }));
+                            }
+                            )
+                            .Series(series =>
+                            {
+                                series.Column(model => model.Value2, model => model.Color).Name("Total Views").Axis("axis1");
+                                series.Line(model => model.Value).Name("CTR %").Color("#3498db").Axis("axis3");
+                            })
+                            .CategoryAxis(axis => axis
+                                .Categories(model => model.Category)
+                                .Crosshair(c => c.Visible(true))
+                                .AxisCrossingValue(0, 10)
+                            )
+                            .ValueAxis(axis => axis
+                                .Numeric("axis1")
+                                .Title("Total Views")
+                            )
+                            .ValueAxis(axis => axis
+                                .Numeric("axis3")
+                                .Title("CTR %")
+                            )
+                            .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Shared(true)
+                                .Format("{0:N0}")
+                                .Template("#= value #")
+                            )
+                            )
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="chart-wrapper">
+                        @(Html.Kendo().Chart<Adz.User.CMS.Models.CampaignModel.CampaignChart>()
+                        .Name("chart-usage")
+                        .Title("Usage in last 7 days")
+                        .Legend(legend => legend
+                            .Position(ChartLegendPosition.Top)
+                        )
+                        .DataSource(ds => ds.Read(read => read.Action("AdsPerformanceUsageDetailGraph_Read", "Reporting", new { CampaignId = ViewBag.CampaignId })))
+                        .Series(series =>
+                        {
+                            series.Line(model => model.Clicks).Name("Clicks");
+                            series.Line(model => model.Views).Name("Views");
+                        })
+                        .CategoryAxis(axis => axis
+                            .Categories(model => model.Date)
+                            //.Labels(labels => labels.Rotation(-90))
+                            .Crosshair(c => c.Visible(true))
+                        )
+                        .ValueAxis(axis => axis.Numeric()
+                            .Labels(labels => labels.Format("{0:N0}"))
+                            .MajorUnit(20)
+                        )
+                        .Tooltip(tooltip => tooltip
+                            .Visible(true)
+                            .Shared(true)
+                            .Format("{0:N0}")
+                        )
+                        )
+                    </div>
+                </div>
+            </div>
+        </div>
+		@*
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @(Html.Kendo().Grid<Adz.User.CMS.Models.CampaignModel.CampaignHistory>()
+                    .Name("grid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(p => p.Campaign.Name).Filterable(false);
+                        columns.Bound(p => p.DateTime).Format("{0:dd MMM yyyy HH:mm:ss}");
+                        columns.Bound(p => p.User.Email);
+                        columns.Bound(p => p.User.Age).ClientTemplate("#= (User.Age == -1) ? 'Unknown' : User.Age #").Filterable(filterable => filterable.UI("agegroupFilter"));
+                        columns.Bound(p => p.Gender).Filterable(filterable => filterable.UI("genderFilter").Extra(false));
+                        columns.Bound(p => p.Latitude).Filterable(false);
+                        columns.Bound(p => p.Longitude).Filterable(false);
+                        columns.Bound(p => p.Action);
+                    })
+                    .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .PageSize(20)
+                        .Events(events => events.Error("error_handler"))
+                        .Read(read => read.Action("AdsPerformanceUsageDetail_Read", "Reporting", new { CampaignId = ViewBag.CampaignId }))
+                        .Model(m =>
+                        {
+                            m.Field("User.Age", typeof(System.Int32));
+                        })
+                    )
+                    .Filterable(filterable => filterable
+                        .Operators(operators => operators
+                            .ForString(str => str.Clear()
+                                .IsEqualTo("Is equal to")
+                            )
+                            .ForNumber(num => num.Clear()
+                                .IsLessThanOrEqualTo("Is less than")
+                                .IsGreaterThan("Is greater than")
+                            )
+                        )
+                    )
+                    .Events(events => events.FilterMenuInit("filterInit"))
+                    .Pageable(page => page
+                        .Refresh(true)
+                        .PageSizes(true)
+                    )
+                    .Sortable(sortable => sortable
+                        .AllowUnsort(true)
+                        .SortMode(GridSortMode.MultipleColumn))
+                    .Resizable(resize => resize.Columns(true))
+                    .Reorderable(reorder => reorder.Columns(true))
+                    )
+                </div>
+            </div>
+        </div>
+		*@
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @(Html.Kendo().Grid<Adz.User.CMS.Models.CampaignModel.CampaignHistoryGroupSummarize>()
+                    .Name("grid-sum")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(p => p.Date).Format("{0:dd MMM yyyy}");
+                        columns.Bound(p => p.HourGroup);
+                        columns.Bound(p => p.Views);
+                        columns.Bound(p => p.Clicks);
+                    })
+                    .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .PageSize(20)
+                        .Events(events => events.Error("error_handler"))
+                        .Read(read => read.Action("AdsPerformanceUsageDetailSummarize_Read", "Reporting", new { CampaignId = ViewBag.CampaignId }))
+                    )
+                    .Pageable(page => page
+                        .Refresh(true)
+                        .PageSizes(true)
+                    )
+                    .Sortable(sortable => sortable
+                        .AllowUnsort(true)
+                        .SortMode(GridSortMode.MultipleColumn))
+                    .Resizable(resize => resize.Columns(true))
+                    .Reorderable(reorder => reorder.Columns(true))
+                    )
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var result = "";
+            var message = "";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message = this;
+                    });
+                }
+            });
+            if (message != "") {
+                result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Error</h4>'
+                + message
+                + '</div>';
+
+                $("#msgbox").html(result);
+            }
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    function genderFilter(element) {
+        element.kendoDropDownList({
+            dataSource: {
+                transport: {
+                    read: "@Url.Action("FilterMenuCustomization_Genders", "Reporting")"
+                }
+            },
+            optionLabel: "--Select Value--"
+        });
+    }
+
+    function agegroupFilter(element) {
+        element.kendoDropDownList({
+            dataSource: {
+                transport: {
+                    read: "@Url.Action("FilterMenuCustomization_AgeGroup", "Reporting")"
+            }
+        },
+            optionLabel: "--Select Value--"
+        });
+    }
+
+    function filterInit(e) {
+        if (e.field == "User.Age") {
+            var beginOperator = e.container.find("[data-role=dropdownlist]:eq(0)").data("kendoDropDownList");
+            beginOperator.value("gt");
+            beginOperator.trigger("change");
+        }
+    }
+
+</script>

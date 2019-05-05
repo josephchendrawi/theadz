@@ -1,0 +1,238 @@
+﻿
+@{
+    ViewBag.Title = "Overall User Status";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(21);
+        $(document).tooltip();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Overall User Status</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a>Overall User Status</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        <div class="alert alert-block alert-danger">
+            <a class="close" data-dismiss="alert" href="#">X</a>
+            <h4 class="alert-heading">Error</h4>
+            @ViewBag.msg
+        </div>
+    }
+</div>
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="chart-wrapper">
+                                    @(Html.Kendo().Chart<Adz.User.CMS.Models.CampaignModel.OverallChart>()
+                        .Name("chart-usage")
+                        .Title("Sensite Graph based on number days users are active")
+                        .Legend(legend => legend
+                            .Position(ChartLegendPosition.Top)
+                        )
+                        .DataSource(ds => ds.Read(read => read.Action("DaysActiveGraph_Read", "Reporting")))
+                        .Series(series =>
+                        {
+                            series.Line(model => model.SensiteTotalUser).Name("Sensite Total User").Axis("axis1").Color("#e74c3c");
+                            series.Line(model => model.AverageDaysActive).Name("Average Days Active").Axis("axis2").Color("#2980b9");
+                            series.Line(model => model.AverageDailyViews).Name("Average Daily Views").Axis("axis2").Color("#3498db");
+                            series.Line(model => model.AverageCTRinPercent).Name("Average CTR (%)").Axis("axis3").Color("#2ecc71");
+                        })
+                        .CategoryAxis(axis => axis
+                            .Categories(model => model.XDaysActive)
+                            //.Labels(labels => labels.Rotation(-90))
+                            .Crosshair(c => c.Visible(true))
+                            .AxisCrossingValue(0, 10, 10)
+                        )
+                        .ValueAxis(axis => axis
+                            .Numeric("axis1")
+                            .Title("Sensite Total Users")
+                            .Color("#e74c3c")
+                        )
+                        .ValueAxis(axis => axis
+                            .Numeric("axis2")
+                            .Title("Average Value")
+                            .Color("#2980b9")
+                        )
+                        .ValueAxis(axis => axis
+                            .Numeric("axis3")
+                            .Max(100).Min(0)
+                            .Title("CTR Percentage (%)")
+                            .Color("#2ecc71")
+                        )
+                        .Tooltip(tooltip => tooltip
+                            .Visible(true)
+                            .Shared(true)
+                            .Format("{0:N0}")
+                            .Template("#= value #")
+                        )
+                                    )
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="chart-wrapper">
+                                    @(Html.Kendo().Chart<Adz.User.CMS.Models.CampaignModel.OverallChart>()
+                        .Name("chart-usage-2")
+                        .Title("Sensite Graph based on daily views per day")
+                        .Legend(legend => legend
+                            .Position(ChartLegendPosition.Top)
+                        )
+                        .DataSource(ds => ds.Read(read => read.Action("DailyViewsGraph_Read", "Reporting")))
+                        .Series(series =>
+                        {
+                            series.Line(model => model.SensiteTotalUser).Name("Sensite Total User").Axis("axis1").Color("#e74c3c");
+                            series.Line(model => model.AverageDaysActive).Name("Average Days Active").Axis("axis2").Color("#2980b9");
+                            series.Line(model => model.AverageDailyViews).Name("Average Daily Views").Axis("axis2").Color("#3498db");
+                            series.Line(model => model.AverageCTRinPercent).Name("Average CTR (%)").Axis("axis3").Color("#2ecc71");
+                        })
+                        .CategoryAxis(axis => axis
+                            .Categories(model => model.XDaysActive)
+                            //.Labels(labels => labels.Rotation(-90))
+                            .Crosshair(c => c.Visible(true))
+                            .AxisCrossingValue(0, 10, 10)
+                        )
+                        .ValueAxis(axis => axis
+                            .Numeric("axis1")
+                            .Title("Sensite Total Users")
+                            .Color("#e74c3c")
+                        )
+                        .ValueAxis(axis => axis
+                            .Numeric("axis2")
+                            .Title("Average Value")
+                            .Color("#2980b9")
+                        )
+                        .ValueAxis(axis => axis
+                            .Numeric("axis3")
+                            .Max(100).Min(0)
+                            .Title("CTR Percentage (%)")
+                            .Color("#2ecc71")
+                        )
+                        .Tooltip(tooltip => tooltip
+                            .Visible(true)
+                            .Shared(true)
+                            .Format("{0:N0}")
+                            .Template("#= value #")
+                        )
+                                    )
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-6">
+                        <div class="chart-wrapper">
+                            @(Html.Kendo().Chart<Adz.User.CMS.Models.CampaignModel.CampaignPieChart>()
+                                .Name("chart-gender")
+                                .Title(title => title
+                                    .Text("Overall Breakdown of Views by Gender")
+                                    .Position(ChartTitlePosition.Top))
+                                .Legend(legend => legend
+                                    .Visible(false)
+                                )
+                                .DataSource(ds =>
+                                {
+                                    ds.Read(read => read.Action("GenderOverallView_Read", "Reporting"));
+                                }
+                                )
+                                .Series(series => series
+                                    .Pie(model => model.Value, model => model.Category, model => model.Color)
+                                    .Labels(labels => labels
+                                        .Template("#= category #: #= kendo.format('{0:P}', percentage)#")
+                                        .Background("transparent")
+                                        .Visible(true)
+                                    )
+                                    .StartAngle(150)
+                                )
+                                .Tooltip(tooltip => tooltip
+                                    .Visible(true)
+                                    .Format("{0:N0}")
+                                    .Template("#= value # user(s) ")
+                                )
+                            )
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-wrapper">
+                            @(Html.Kendo().Chart<Adz.User.CMS.Models.CampaignModel.CampaignBarChart>()
+                                .Name("chart-gender-2")
+                                .Title(title => title
+                                .Text("Overall Breakdown CTR % by Gender")
+                                .Position(ChartTitlePosition.Top))
+                                .Legend(legend => legend
+                                    .Visible(false)
+                                )
+                                .DataSource(ds =>
+                                {
+                                    ds.Read(read => read.Action("GenderOverallCTR_Read", "Reporting"));
+                                }
+                                )
+                                .Series(series =>
+                                {
+                                    series.Column(model => model.Value, model => model.Color).Name("CTR %");
+                                })
+                                .CategoryAxis(axis => axis
+                                    .Categories(model => model.Category)
+                                )
+                                .Tooltip(tooltip => tooltip
+                                    .Visible(true)
+                                    .Format("{0:N0}")
+                                    .Template("#= value # % ")
+                                )
+                            )
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var result = "";
+            var message = "";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message = this;
+                    });
+                }
+            });
+            if (message != "") {
+                result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Error</h4>'
+                + message
+                + '</div>';
+
+                $("#msgbox").html(result);
+            }
+        }
+    }
+</script>

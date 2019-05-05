@@ -1,0 +1,168 @@
+﻿
+@{
+    ViewBag.Title = "Campaign";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(8);
+        $(document).tooltip();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Campaign Information <a href="@Url.Action("CampaignAdd","Campaign")" class="btn btn-default btn-sm"><i class="fa fa-plus-square"></i> <span>Add</span></a></h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a>Campaign Information</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        if (ViewBag.msg == "a1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Campaign successfully created.
+            </div>
+        }
+        else if (ViewBag.msg == "a2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Create Campaign failed.
+            </div>
+        }
+        else if (ViewBag.msg == "e1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Campaign successfully updated.
+            </div>
+        }
+        else if (ViewBag.msg == "e2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Update Campaign failed.
+            </div>
+        }
+    }
+</div>
+
+@(Html.Kendo().Grid<Adz.User.CMS.Models.CampaignModel.Campaign>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Name);
+        columns.Bound(p => p.Merchant.Name).Title("Merchant");
+        columns.Bound(p => p.Create).Format("{0:dd MMM yyyy}").Title("Created On");
+        columns.Bound(p => p.LastAction).ClientTemplate(
+            "<a class='gridBtn' href='CampaignView?CampaignId=#=CampaignId#'><span class='fa fa-eye' title='View' ></span></a>&nbsp;&nbsp;" +
+            "#if(LastAction!='5'){#" +
+            "|&nbsp;&nbsp;<a class='gridBtn' href='CampaignEdit?CampaignId=#=CampaignId#'><span class='fa fa-pencil' title='Edit' ></span></a>&nbsp;&nbsp;" +
+            "|&nbsp;&nbsp;<a class='gridBtn k-button-icontext k-grid-delete'  href=''><span class='fa fa-archive' title='Archive' ></span></a>" +
+            "|&nbsp;&nbsp;<a class='gridBtn'  onclick='Duplicate(#=CampaignId#)'><span class='fa fa-files-o' title='Duplicate' ></span></a>" +
+            "#}#").Title("Action").Filterable(filter => filter.Enabled(false)).Width(200);
+    })
+    .Editable(editable => editable.DisplayDeleteConfirmation("Do you want to archive this Campaign?"))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .Events(events => events.Error("error_handler"))
+        .Read(read => read.Action("Campaign_Read", "Campaign"))
+        .Destroy(destroy => destroy.Action("Campaign_Destroy", "Campaign"))
+        .Model(model =>
+        {
+            model.Id(p => p.CampaignId);
+        })
+        .Filter(filter => filter.Add(p => p.LastAction).IsNotEqualTo("5"))
+    )
+        //.Events(events => events.DataBound("onDataBound").Change("onChange"))
+    .Filterable(filterable => filterable
+        .Extra(false)
+            .Operators(operators => operators
+            .ForString(str => str.Clear()
+                .StartsWith("Starts with")
+                .Contains("Contains")
+            ))
+    )
+    .Pageable(page => page
+        .Refresh(true)
+        .PageSizes(true)
+    )
+        //.Scrollable(scr => scr.Height(280))
+    .Sortable(sortable => sortable
+        .AllowUnsort(true)
+        .SortMode(GridSortMode.MultipleColumn))
+        //.Groupable()
+    .Resizable(resize => resize.Columns(true))
+    .Reorderable(reorder => reorder.Columns(true))
+)
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var result = "";
+            var message = "";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message = this;
+                    });
+                }
+            });
+            if (message != "") {
+                result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Error</h4>'
+                + message
+                + '</div>';
+
+                $("#msgbox").html(result);
+            }
+        }
+    }
+
+    function Duplicate(id) {
+        var r = confirm("Confirm duplicate Campaign?");
+        if (r == true) {
+            console.log(id);
+            $.post("Campaign_Duplicate", { CampaignId: id }, function (data) {
+                console.log(data);
+                if (data) {
+                    var result = "";
+                    if (data == "1") {
+                        result = '<div class="alert alert-block alert-success">'
+                                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                                + '<h4 class="alert-heading">Success!</h4>'
+                                + 'Campaign successfully duplicated.'
+                                + '</div>';
+                    }
+                    else if (data == "2") {
+                        result = '<div class="alert alert-block alert-danger">'
+                                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                                + '<h4 class="alert-heading">Error</h4>'
+                                + 'Duplicate Campaign failed.'
+                                + '</div>';
+                    }
+                    else {
+                        result = '<div class="alert alert-block alert-danger">'
+                                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                                + '<h4 class="alert-heading">Error</h4>'
+                                + $(data).text()
+                                + '</div>';
+                    }
+                    $("#msgbox").html(result);
+                }
+            });
+        }
+    }
+</script>

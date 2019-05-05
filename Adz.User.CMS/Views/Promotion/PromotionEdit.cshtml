@@ -1,0 +1,98 @@
+﻿@model Adz.User.CMS.Models.PromotionModel.Promotion
+@{
+    ViewBag.Title = "Promotion Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script src="@Url.Content("~/Scripts/jquery.fancybox.js")" type="text/javascript"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/fancy/jquery.fancybox.css")">
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(18);
+        $(document).tooltip();
+        $('.fancybox').fancybox();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Promotion Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a href="@Url.Action("Promotion", "Promotion")">Promotion</a> /
+        <a>Promotion Edit</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        <div class="alert alert-block alert-danger">
+            <a class="close" data-dismiss="alert" href="#">X</a>
+            <h4 class="alert-heading">Error</h4>
+            @ViewBag.msg
+        </div>
+    }
+</div>
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                @using (Html.BeginForm())
+                {
+                @Html.HiddenFor(model => model.PromotionId)
+                    
+                <div class="panel-body">
+                    <h4>Edit Promotion</h4><hr />
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Personal Information
+                            </div>
+                            <div class="panel-body">
+                                <div class="leftcol">@Html.LabelFor(model => model.PromoCode)<span class="must-be-filled">*</span></div>
+                                <div class="rightcol">@Html.TextBoxFor(model => model.PromoCode)@Html.ValidationMessageFor(model => model.PromoCode)</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Value)</div>
+                                <div class="rightcol">@Html.TextBoxFor(model => model.Value)@Html.ValidationMessageFor(model => model.Value)</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Description)</div>
+                                <div class="rightcol">@Html.TextAreaFor(model => model.Description, new { attr = "rows=5" })@Html.ValidationMessageFor(model => model.Description)</div>
+                                <div class="line-light"></div>
+                                <div class="leftcol">@Html.LabelFor(model => model.OnScheduleFlag)</div>
+                                <div class="rightcol">@Html.CheckBoxFor(model => model.OnScheduleFlag) <label for="OnScheduleFlag" style="font-weight: normal">Make Promotion only on certain period of time?</label></div>
+                                <div class="leftcol">@Html.LabelFor(model => model.StartAt)</div>
+                                <div class="rightcol">
+                                    @(Html.Kendo().DatePickerFor(model => model.StartAt)
+                                            .Format("dd MMM yyyy")
+                                    )
+                                </div>
+                                <div class="leftcol">@Html.LabelFor(model => model.EndAt)</div>
+                                <div class="rightcol">
+                                    @(Html.Kendo().DatePickerFor(model => model.EndAt)
+                                            .Format("dd MMM yyyy")
+                                    )
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <input type="submit" value="Update" class="k-button" onclick="return UpdateConf()" />
+                        <a href="@Url.Action("Promotion","Promotion")" class="k-button">Cancel</a>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#PromoCode").focus();
+    });
+
+    function UpdateConf() {
+        var r = confirm("Confirm update Promotion information?");
+        if (r == true) { AddEditToInput(); return true; }
+        else return false;
+    }
+</script>

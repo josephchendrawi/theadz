@@ -1,0 +1,154 @@
+﻿
+@{
+    ViewBag.Title = "Promotion";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(18);
+        $(document).tooltip();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Promotion Information <a href="@Url.Action("PromotionAdd","Promotion")" class="btn btn-default btn-sm"><i class="fa fa-plus-square"></i> <span>Add</span></a></h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a>Promotion Information</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        if (ViewBag.msg == "a1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Promotion successfully created.
+            </div>
+        }
+        else if (ViewBag.msg == "a2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Create Promotion failed.
+            </div>
+        }
+        else if (ViewBag.msg == "e1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Promotion successfully updated.
+            </div>
+        }
+        else if (ViewBag.msg == "e2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Update Promotion failed.
+            </div>
+        }
+    }
+</div>
+
+@(Html.Kendo().Grid<Adz.User.CMS.Models.PromotionModel.Promotion>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.PromoCode).Title("Promo Code");
+        columns.Bound(p => p.Value);
+        columns.Bound(p => p.Description);
+        columns.Bound(p => p.Create).Format("{0:dd MMM yyyy}").Title("Created At");
+        columns.Bound(p => p.OnScheduleFlag).Title("On Schedule").ClientTemplate(
+            "#if(OnScheduleFlag == true){# Yes #}else{# No #}#"
+        );
+        columns.Bound(p => p.StartAt).Title("Start At").ClientTemplate(
+            "#if(OnScheduleFlag == true){# #=kendo.toString(StartAt,'yyyy-MM-dd')# #}#"
+        );
+        columns.Bound(p => p.EndAt).Title("End At").ClientTemplate(
+            "#if(OnScheduleFlag == true){# #=kendo.toString(EndAt,'yyyy-MM-dd')# #}#"
+        );
+        columns.Bound(p => p.PromotionId).ClientTemplate(
+            "#if(LastAction=='1'){#" +
+            "Ongoing" +
+            "#}else if(LastAction=='2'){#" +
+            "Stopped" +
+            "#}#"
+            ).Title("Status").Filterable(filter => filter.Enabled(false));
+        columns.Bound(p => p.LastAction).ClientTemplate(
+            "#if(LastAction!='5'){#" +
+            "#if(LastAction=='1'){#" +
+            "<a class='btn btn-danger btn-sm' href='" + Url.Action("PromotionStop", "Promotion") + "?PromotionId=#=PromotionId#'>Stop</a>&nbsp;&nbsp;" +
+            "#}else if(LastAction=='2'){#" +
+            "<a class='btn btn-success btn-sm' href='" + Url.Action("PromotionRun", "Promotion") + "?PromotionId=#=PromotionId#''>Run</a>&nbsp;&nbsp;" +
+            "#}#" +
+            "|&nbsp;&nbsp;<a class='gridBtn' href='PromotionEdit?PromotionId=#=PromotionId#'><span class='fa fa-pencil' title='Edit' ></span></a>&nbsp;&nbsp;" +
+            "|&nbsp;&nbsp;<a class='gridBtn k-button-icontext k-grid-delete'  href=''><span class='fa fa-archive' title='Archive' ></span></a>" +
+            "#}#"
+            ).Title("Action").Filterable(filter => filter.Enabled(false)).Width(200);
+    })
+    .Editable(editable => editable.DisplayDeleteConfirmation("Do you want to archive this Promotion?"))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .Events(events => events.Error("error_handler"))
+        .Read(read => read.Action("Promotion_Read", "Promotion"))
+        .Destroy(destroy => destroy.Action("Promotion_Destroy", "Promotion"))
+        .Model(model =>
+        {
+            model.Id(p => p.PromotionId);
+        })
+        .Filter(filter => filter.Add(p => p.LastAction).IsNotEqualTo("5"))
+    )
+    //.Events(events => events.DataBound("onDataBound").Change("onChange"))
+    .Filterable(filterable => filterable
+        .Extra(false)
+            .Operators(operators => operators
+            .ForString(str => str.Clear()
+                .StartsWith("Starts with")
+                .Contains("Contains")
+            ))
+    )
+    .Pageable(page => page
+        .Refresh(true)
+        .PageSizes(true)
+    )
+    //.Scrollable(scr => scr.Height(280))
+    .Sortable(sortable => sortable
+        .AllowUnsort(true)
+        .SortMode(GridSortMode.MultipleColumn))
+    //.Groupable()
+    .Resizable(resize => resize.Columns(true))
+    .Reorderable(reorder => reorder.Columns(true))
+)
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var result = "";
+            var message = "";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message = this;
+                    });
+                }
+            });
+            if (message != "") {
+                result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Error</h4>'
+                + message
+                + '</div>';
+
+                $("#msgbox").html(result);
+            }
+        }
+    }
+</script>

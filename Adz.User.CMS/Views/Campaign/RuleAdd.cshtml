@@ -1,0 +1,500 @@
+﻿@model Adz.User.CMS.Models.CampaignModel.Rule
+@{
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+}
+
+@using Kendo.Mvc.UI
+<link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.common.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.default.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.dataviz.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.dataviz.default.min.css")" />
+
+<script src="@Url.Content("~/Scripts/kendo/jquery.min.js")"></script>
+<script src="@Url.Content("~/Scripts/kendo/kendo.all.min.js")"></script>
+<script src="@Url.Content("~/Scripts/kendo/kendo.aspnetmvc.min.js")"></script>
+<script src="~/Scripts/kendo/kendo.angular.min.js"></script>
+<script type="text/javascript"
+        src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDBe9tprDB4drAPp-O4-Ypcer1EOvUUvrQ&sensor=true">
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        @if (ViewBag.msg != null && ViewBag.msg == "a1")
+        {
+        <text>
+        var idx = parseInt(parent.$("#tempAddIdx").val());
+        var ruleid = "temp" + idx;
+        parent.$("#rulesTable").append(
+            "<tr id=\"row-" + ruleid + "\">"
+                + "<td><span id=\"gender-text-" + ruleid + "\">@{if(Model.Gender == 1){<text>Male</text>}else if(Model.Gender == 2){<text>Female</text>}else if(Model.Gender == 3){<text>All</text>}else{<text>-</text>}}</span><span id=\"gender-" + ruleid + "\" class=\"displaynone\">@Model.Gender</span></td>"
+                + "<td><span id=\"nov-" + ruleid + "\">@Model.NumberOfView</span></td>"
+                + "<td><span id=\"start-" + ruleid + "\">@Model.StartTime</span></td>"
+                + "<td><span id=\"end-text-" + ruleid + "\">@{if(Model.NoEnd == false){<text>@Model.EndTime</text>}else{<text>-</text>}}</span>"
+                + "<span id=\"end-" + ruleid + "\" class=\"displaynone\">@Model.EndTime</span><span id=\"noend-" + ruleid + "\" class=\"displaynone\">@Model.NoEnd</span></td>"
+                + "<td><a id=\"fancymap-" + ruleid + "\" class=\"a-hand-cursor\" onclick=\"fancyboxMap(@Model.Latitude, @Model.Longitude)\">View</a><span id=\"latitude-" + ruleid + "\" class=\"displaynone\">@Model.Latitude</span><span id=\"longitude-" + ruleid + "\" class=\"displaynone\">@Model.Longitude</span></td>"
+                + "<td><span id=\"days-" + ruleid + "\">@if (Model.Monday == true){ <text><span class=\"btn btn-sm btn-default\">Monday</span></text> }@if (Model.Tuesday == true){ <text><span class=\"btn btn-sm btn-default\">Tuesday</span></text> }@if (Model.Wednesday == true){ <text><span class=\"btn btn-sm btn-default\">Wednesday</span></text> }@if (Model.Thursday == true){ <text><span class=\"btn btn-sm btn-default\">Thursday</span></text> }@if (Model.Friday == true){ <text><span class=\"btn btn-sm btn-default\">Friday</span></text> }@if (Model.Saturday == true){ <text><span class=\"btn btn-sm btn-default\">Saturday</span></text> }@if (Model.Sunday == true){ <text><span class=\"btn btn-sm btn-default\">Sunday</span></text> }</span><span id=\"monday-" + ruleid + "\" class=\"displaynone\">@Model.Monday</span><span id=\"tuesday-" + ruleid + "\" class=\"displaynone\">@Model.Tuesday</span><span id=\"wednesday-" + ruleid + "\" class=\"displaynone\">@Model.Thursday</span><span id=\"thursday-" + ruleid + "\" class=\"displaynone\">@Model.Wednesday</span><span id=\"friday-" + ruleid + "\" class=\"displaynone\">@Model.Friday</span><span id=\"saturday-" + ruleid + "\" class=\"displaynone\">@Model.Saturday</span><span id=\"sunday-" + ruleid + "\" class=\"displaynone\">@Model.Sunday</span></td>"
+                + "<td><span id=\"agegroup-" + ruleid + "\">@Model.AgeGroupStart <text>-</text> @(Model.AgeGroupEnd == int.MaxValue ? "50+" : Model.AgeGroupEnd.ToString())</span><span id=\"agegroup-start-" + ruleid + "\" class=\"displaynone\">@Model.AgeGroupStart</span><span id=\"agegroup-end-" + ruleid + "\" class=\"displaynone\">@Model.AgeGroupEnd</span></td>"
+                + "<td><span id=\"rule-image-" + ruleid + "\"><a class=\"fancybox\" href=\"@Model.ImageUrl\"><img src=\"@Model.ImageUrl\" class=\"imgth\" /></a></span><span id=\"rule-imageid-" + ruleid + "\" class=\"displaynone\">@Model.ImageId</span></td>"
+                + "<td><a class=\"a-hand-cursor\" onclick=\"updateRule('" + ruleid + "')\"><span class='fa fa-pencil' title='Edit'></span></a> "
+                + "<a class=\"a-hand-cursor\" onclick=\"deleteRule('" + ruleid + "')\"><span class='fa fa-archive' title='Delete'></span></a></td>"
+            + "</tr>"
+        );
+
+        parent.$("#msgbox").append(
+            '<div class="alert alert-block alert-success">'
+            + '<a class="close" data-dismiss="alert" href="#">X</a>'
+            + '<h4 class="alert-heading">Success!</h4>'
+            + 'Rule successfully created.'
+            + '</div>'
+        );
+
+        idx++;
+        parent.$("#tempAddIdx").val(idx);
+
+        if (parent.$("#tempAdd").val() == "") {
+            parent.$("#tempAdd").val(ruleid);
+        }
+        else {
+            parent.$("#tempAdd").val(parent.$("#tempAdd").val() + "#" + ruleid);
+        }
+
+        parent.$.fancybox.close();
+        </text>
+        }
+    });
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.RuleId)
+    @Html.HiddenFor(model => model.Latitude)
+    @Html.HiddenFor(model => model.Longitude)
+    @Html.HiddenFor(model => model.ImageId)
+    @Html.HiddenFor(model => model.ImageUrl)
+
+    for (int i = 0; i < Model.ExistingImages.Count(); i++)
+    {
+        @Html.HiddenFor(m => m.ExistingImages[i].ImageId)
+        @Html.HiddenFor(m => m.ExistingImages[i].Url)
+    }
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6">
+                @Html.LabelFor(model => model.Gender) <br />
+                @(Html.Kendo().DropDownListFor(model => model.Gender)
+                                    .HtmlAttributes(new { })
+                                    .OptionLabel("--Select Gender--")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .BindTo(new List<SelectListItem>(){
+                                        new SelectListItem(){
+                                            Text="All",
+                                            Value="3"
+                                        },
+                                        new SelectListItem(){
+                                            Text="Male",
+                                            Value="1"
+                                        },
+                                        new SelectListItem(){
+                                            Text="Female",
+                                            Value="2"
+                                        }
+                                    })
+                                    .Value(Model.Gender.ToString())
+                )
+            </div>
+            <div class="col-xs-6">
+                @Html.LabelFor(model => model.StartTime) <br />
+                @(Html.Kendo().DateTimePickerFor(model => model.StartTime)
+                    .Format("dd MMM yyyy h:mm tt")
+                    .Events(e => e
+                        .Change("start_time_change")
+                    )
+                )
+            </div>
+            <div class="col-xs-3"></div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-xs-6">
+                @Html.LabelFor(model => model.NumberOfView) <br />
+                @(Html.Kendo().NumericTextBoxFor(model => model.NumberOfView)
+                    .Min(0)
+                    .Format("#")
+                    .Value(Model.NumberOfView)
+                )
+                (0 = unlimited views)
+            </div>
+            <div class="col-xs-6">
+                @Html.LabelFor(model => model.EndTime) <br />
+                <span id="EndTimeWrap" @if (Model.NoEnd == true)
+                                       { <text> style="display:none;" </text>  }>
+                    @(Html.Kendo().DateTimePickerFor(model => model.EndTime)
+                        .Format("dd MMM yyyy h:mm tt")
+                        .Min(Model.StartTime)
+                    )
+                </span>
+
+                @Html.CheckBoxFor(model => model.NoEnd, new { onchange = "NoEndOnChange(this)" })
+                @Html.LabelFor(model => model.NoEnd)
+            </div>
+            <div class="col-xs-3">
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            @Html.HiddenFor(model => model.TempLatLong)
+            <div class="col-lg-12">
+                Click on the map to set preferred coordinate.
+                <div class="map_smallcanvas" id="map_canvas"></div>
+                <script type="text/javascript">
+                    $(function () {
+                        initialize();
+                    });
+                </script>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-12">
+                <label>Days</label>
+            </div>
+            <div class="col-sm-3 days">
+                @Html.CheckBoxFor(model => model.Monday) <label for="Monday" style="font-weight: normal">Monday</label>
+            </div>
+            <div class="col-sm-3 days">
+                @Html.CheckBoxFor(model => model.Tuesday) <label for="Tuesday" style="font-weight: normal">Tuesday</label>
+            </div>
+            <div class="col-sm-3 days">
+                @Html.CheckBoxFor(model => model.Wednesday) <label for="Wednesday" style="font-weight: normal">Wednesday</label>
+            </div>
+            <div class="col-sm-3 days">
+                @Html.CheckBoxFor(model => model.Thursday) <label for="Thursday" style="font-weight: normal">Thursday</label>
+            </div>
+            <div class="col-sm-3 days">
+                @Html.CheckBoxFor(model => model.Friday) <label for="Friday" style="font-weight: normal">Friday</label>
+            </div>
+            <div class="col-sm-3 days">
+                @Html.CheckBoxFor(model => model.Saturday) <label for="Saturday" style="font-weight: normal">Saturday</label>
+            </div>
+            <div class="col-sm-3 days">
+                @Html.CheckBoxFor(model => model.Sunday) <label for="Sunday" style="font-weight: normal">Sunday</label>
+            </div>
+            <div class="col-sm-3">
+                @Html.CheckBox("checkAll") <label for="checkAll">All Days</label>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-12">
+                <label>Age Group</label>
+            </div>
+            <div class="col-sm-12">
+                @(Html.Kendo().DropDownListFor(model => model.AgeGroupStart)
+                    .HtmlAttributes(new { })
+                    .OptionLabel("--Select--")
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .BindTo(new List<SelectListItem>(){
+                        new SelectListItem(){
+                            Text="0",
+                            Value="0"
+                        },
+                        new SelectListItem(){
+                            Text="10",
+                            Value="10"
+                        },
+                        new SelectListItem(){
+                            Text="20",
+                            Value="20"
+                        },
+                        new SelectListItem(){
+                            Text="30",
+                            Value="30"
+                        },
+                        new SelectListItem(){
+                            Text="40",
+                            Value="40"
+                        },
+                        new SelectListItem(){
+                            Text="50",
+                            Value="50"
+                        }
+                    })
+                    .Value(Model.AgeGroupStart.ToString())
+                )
+                -
+                @(Html.Kendo().DropDownListFor(model => model.AgeGroupEnd)
+                    .HtmlAttributes(new { })
+                    .OptionLabel("--Select--")
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .BindTo(new List<SelectListItem>(){
+                        new SelectListItem(){
+                            Text="0",
+                            Value="0"
+                        },
+                        new SelectListItem(){
+                            Text="10",
+                            Value="10"
+                        },
+                        new SelectListItem(){
+                            Text="20",
+                            Value="20"
+                        },
+                        new SelectListItem(){
+                            Text="30",
+                            Value="30"
+                        },
+                        new SelectListItem(){
+                            Text="40",
+                            Value="40"
+                        },
+                        new SelectListItem(){
+                            Text="50",
+                            Value="50"
+                        },
+                        new SelectListItem(){
+                            Text="50+",
+                            Value=int.MaxValue.ToString()
+                        }
+                    })
+                    .Value(Model.AgeGroupEnd.ToString())
+                )
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-12">
+                <label>Image</label>
+            </div>
+            <div class="row">
+                @foreach (var v in Model.ExistingImages)
+                {
+                    <div class="col-sm-3">
+                        @if (v.ImageId == Model.ImageId)
+                        {
+                            <input type="radio" checked value="@v.ImageId|@v.Url" name="ruleimage" id="ruleimage-@v.ImageId" class="" />
+                            <a onclick="set_radio('@v.ImageId');"><img src="@v.Url" class="imgth" id="ruleimage-img-@v.ImageId" /></a>
+                        }
+                        else
+                        {
+                            <input type="radio" value="@v.ImageId|@v.Url" name="ruleimage" id="ruleimage-@v.ImageId" class="" />
+                            <a onclick="set_radio('@v.ImageId');"><img src="@v.Url" class="imgth" id="ruleimage-img-@v.ImageId" /></a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-lg-12">
+                <input type="submit" value="Submit" class="btn btn-success" onclick="return UpdateConfFancyBox()" />
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    function UpdateConfFancyBox() {
+        var r = confirm("Confirm submit this Rule?");
+        if (r == true) return true;
+        else return false;
+    }
+
+    var initialLocation;
+    var kl = new google.maps.LatLng(3.316, 101.48);
+    var browserSupportFlag = new Boolean();
+    //var infowindow = new google.maps.InfoWindow();
+
+    function PostLocate() {
+        var line = $('#AddressLine1').val();
+        var zipcode = $('#PostCode').val();
+        var city = $('#cityDropDown').data("kendoComboBox").text();
+        if (city == null) {
+            city = "";
+        }
+        var address = line + "," + zipcode + "," + city;
+
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                if (marker == null) {
+                    marker = createMarker(results[0].geometry.location, "name", $('#Name').val());
+                }
+                else {
+                    marker.setPosition(results[0].geometry.location);
+                }
+
+                //assign coordinate value as hidden data
+                $('#TempLatLong').val(results[0].geometry.location.toString());
+
+            } else {
+                alert("Location not found ");
+            }
+        });
+
+    }
+    function createMarker(latlng, name, html) {
+        var contentString = html;
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            zIndex: Math.round(latlng.lat() * -100000) << 5
+        });
+
+        google.maps.event.addListener(marker, 'click', function () {
+            //infowindow.setContent(contentString);
+            //infowindow.open(map, marker);
+        });
+        google.maps.event.trigger(marker, 'click');
+        return marker;
+    }
+    function initialize() {
+        var myOptions = {
+            zoom: 6,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+        //geocode
+        var line = '';
+        var zipcode = '';
+        var state = '';
+        var city = '';
+
+        var address = line + "," + zipcode;
+
+        var geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                map.setZoom(15);
+
+                //initialize marker on current position
+                marker = createMarker(results[0].geometry.location, "name", $('#Name').val());
+
+                //set default modified coord and initially save this coordinate to db
+                $('#TempLatLong').val(results[0].geometry.location);
+
+            } else {
+                //alert("Location not found , loading nearby area on map");
+
+                //use geolocation if no location found based on typed address
+                if (navigator.geolocation) {
+                    browserSupportFlag = true;
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        map.setCenter(initialLocation);
+                        map.setZoom(16);
+
+                        //initialize marker on current position
+                        marker = createMarker(initialLocation, "name", $('#Name').val());
+                    }, function () {
+                        handleNoGeolocation(browserSupportFlag);
+                    });
+                } else {
+                    browserSupportFlag = false;
+                    handleNoGeolocation(browserSupportFlag);
+                }
+
+                //set default modified coord
+                $('#TempLatLong').val(kl);
+
+
+                //reinitialize marker in case no result found
+                marker = new google.maps.Marker();
+            }
+        });
+
+        //place a marker on the map when user click map , and then modify the coordinate stored in hidden field for update use later
+        google.maps.event.addListener(map, 'click', function (event) {
+
+            //clear default marker on the map
+            marker.setMap(null);
+
+            //call function to create marker
+            if (marker) {
+                marker.setMap(null);
+                marker = null;
+            }
+
+            var geocoder = new google.maps.Geocoder();
+            var addr = "null";
+
+            geocoder.geocode({ 'latLng': event.latLng }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[1]) {
+                        //to get city *callback(results[1].address_components[1].long_name);
+                        addr = results[1].formatted_address;
+                        marker = createMarker(event.latLng, "name", $('#Name').val());
+
+                        //assign coordinate value as hidden data
+                        $('#TempLatLong').val(event.latLng.toString());
+
+                    }
+                } else {
+                    addr = "still null";
+                    marker = createMarker(event.latLng, "name", $('#Name').val());
+                }
+            });
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    function start_time_change() {
+        if ($('#NoEnd').is(':checked') == false) {
+            var start = new Date($('#StartTime').val());
+            var end = new Date($('#EndTime').val());
+            if (start > end) {
+                end = start;
+            }
+
+            var endDateTimePicker = $("#EndTime").data("kendoDateTimePicker");
+            endDateTimePicker.setOptions({
+                min: start
+            });
+            endDateTimePicker.value(end);
+        }
+    }
+
+    function NoEndOnChange(element) {
+        if (element.checked == true) {
+            $("#EndTimeWrap").hide();
+        }
+        else {
+            var start = new Date($('#StartTime').val());
+            var endDateTimePicker = $("#EndTime").data("kendoDateTimePicker");
+            endDateTimePicker.setOptions({
+                min: start
+            });
+            endDateTimePicker.value(start);
+
+            $("#EndTimeWrap").show();
+        }
+    }
+
+    function set_radio(inputid) {
+        $("#ruleimage-" + inputid).prop("checked", true);
+    }
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $('#checkAll').click(function () {
+            if ($(this).is(":checked")) {
+                $('.days input:checkbox').each(function () {
+                    $(this).prop('checked', true);
+                })
+            }
+            else {
+                $('.days input:checkbox').each(function () {
+                    $(this).prop('checked', false);
+                })
+            }
+        });
+    });
+</script>

@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "Tag Archive";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(11);
+        $(document).tooltip();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Tag Archive</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a>Tag Archive</a>
+    </div>
+</div>
+
+<div id="msgbox">
+</div>
+
+@(Html.Kendo().Grid<Adz.User.CMS.Models.CampaignModel.Tag>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Name);
+        columns.Bound(p => p.Create).Format("{0:dd MMM yyyy}").Title("Created On");
+        columns.Bound(p => p.LastAction).ClientTemplate(
+            "<a class='gridBtn' href='TagView?TagId=#=TagId#'><span class='fa fa-eye' title='View' ></span></a>&nbsp;&nbsp;").Title("Action").Filterable(filter => filter.Enabled(false)).Width(200);
+    })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .Events(events => events.Error("error_handler"))
+        .Read(read => read.Action("Tag_Read", "Campaign"))
+        .Model(model =>
+        {
+            model.Id(p => p.TagId);
+        })
+        .Filter(filter => filter.Add(p => p.LastAction).IsEqualTo("5"))
+    )
+        //.Events(events => events.DataBound("onDataBound").Change("onChange"))
+    .Filterable(filterable => filterable
+        .Extra(false)
+            .Operators(operators => operators
+            .ForString(str => str.Clear()
+                .StartsWith("Starts with")
+                .Contains("Contains")
+            ))
+    )
+    .Pageable(page => page
+        .Refresh(true)
+        .PageSizes(true)
+    )
+        //.Scrollable(scr => scr.Height(280))
+    .Sortable(sortable => sortable
+        .AllowUnsort(true)
+        .SortMode(GridSortMode.MultipleColumn))
+        //.Groupable()
+    .Resizable(resize => resize.Columns(true))
+    .Reorderable(reorder => reorder.Columns(true))
+)
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var result = "";
+            var message = "";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message = this;
+                    });
+                }
+            });
+            if (message != "") {
+                result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Error</h4>'
+                + message
+                + '</div>';
+
+                $("#msgbox").html(result);
+            }
+        }
+    }
+</script>

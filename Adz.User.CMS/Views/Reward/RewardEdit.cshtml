@@ -1,0 +1,370 @@
+﻿@model Adz.User.CMS.Models.RewardModel.Reward
+@{
+    ViewBag.Title = "Reward Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script src="@Url.Content("~/Scripts/jquery.fancybox.js")" type="text/javascript"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/fancy/jquery.fancybox.css")">
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(13);
+        $(document).tooltip();
+        $('.fancybox').fancybox();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Reward Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a href="@Url.Action("Reward", "Reward")">Reward</a> /
+        <a>Reward Edit</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        <div class="alert alert-block alert-danger">
+            <a class="close" data-dismiss="alert" href="#">X</a>
+            <h4 class="alert-heading">Error</h4>
+            @ViewBag.msg
+        </div>
+    }
+</div>
+
+<input type="hidden" value="" id="tempChoose" name="tempChoose" />
+<input type="hidden" value="" id="tempChooseName" name="tempChooseName" />
+<input type="hidden" value="" id="tempChooseUrl" name="tempChooseUrl" />
+<input type="hidden" value="" id="tempChooseDraft" name="tempChooseDraft" />
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                @using (Html.BeginForm())
+                {
+                    @Html.HiddenFor(model => model.RewardId)
+                    @Html.HiddenFor(model => model.RewardCriteria.CriteriaId)
+                    @Html.HiddenFor(model => model.RewardType.RewardTypeId)
+                                        
+                    <input type="hidden" value="" id="tempEditId" name="tempEditId" />
+                    <input type="hidden" value="" id="tempEditMessage" name="tempEditMessage" />
+                    <input type="hidden" value="" id="tempEditRating" name="tempEditRating" />
+                    <input type="hidden" value="" id="tempDeleteId" name="tempDeleteId" />
+
+                    <div class="panel-body">
+                        <h4>Edit Reward</h4><hr />
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Personal Information
+                                </div>
+                                <div class="panel-body">
+                                    <div class="leftcol">@Html.LabelFor(model => model.SponsorName)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">@Html.TextBoxFor(model => model.SponsorName)@Html.ValidationMessageFor(model => model.SponsorName)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.SubTitle)</div>
+                                    <div class="rightcol">@Html.TextBoxFor(model => model.SubTitle)@Html.ValidationMessageFor(model => model.SubTitle)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.Description)</div>
+                                    <div class="rightcol">@Html.TextAreaFor(model => model.Description)@Html.ValidationMessageFor(model => model.Description)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.RewardCriteria)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("criteriaDropDown")
+                                        .HtmlAttributes(new { @class = "kendoDropdown" })
+                                        .OptionLabel("--Select Criteria--")
+                                        .DataTextField("Name")
+                                        .DataValueField("CriteriaId")
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("CriteriaList", "Reward");
+                                            });
+                                        })
+                                        .Value(Model.RewardCriteria.CriteriaId.ToString())
+                                        )
+                                        @Html.ValidationMessage("CriteriaNull")
+                                    </div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.RewardType)<span class="must-be-filled">*</span></div>
+                                    <div class="rightcol">
+                                        @(Html.Kendo().DropDownList()
+                                        .Name("RewardTypeDropDown")
+                                        .HtmlAttributes(new { @class = "kendoDropdown" })
+                                        .OptionLabel("--Select RewardType--")
+                                        .DataTextField("RewardTypeName")
+                                        .DataValueField("RewardTypeId")
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("RewardTypeList", "Reward");
+                                            });
+                                        })
+                                        .Value(Model.RewardType.RewardTypeId.ToString())
+                                        )
+                                        @Html.ValidationMessage("RewardTypeNull")
+                                    </div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.PointRequirement)</div>
+                                    <div class="rightcol">@Html.EditorFor(model => model.PointRequirement)@Html.ValidationMessageFor(model => model.PointRequirement)</div>
+                                    <div class="leftcol">@Html.LabelFor(model => model.OneTimeFlag)</div>
+                                    @Html.CheckBoxFor(model => model.OneTimeFlag) <label for="OneTimeFlag" style="font-weight: normal">User can redeem once only?</label>
+                                    <div class="leftcol">@Html.LabelFor(model => model.NumberOfStock)</div>
+                                    <div class="rightcol">@Html.EditorFor(model => model.NumberOfStock) (0 = Unlimited) @Html.ValidationMessageFor(model => model.PointRequirement)</div>
+                                    
+                                    <div class="line-light"></div>
+
+                                    @*<div class="leftcol">@Html.LabelFor(model => model.SubImageUrl)</div>*@
+                                    @Html.HiddenFor(model => model.SubImageId)
+                                    @Html.HiddenFor(model => model.SubImageName)
+                                    @Html.HiddenFor(model => model.SubImageUrl)
+                                    <div class="rightcol" id="subimageplace">
+                                        <input id="subImagebtn" type="button" value="Add Image" class="k-button" /><span class="must-be-filled">*</span>@Html.ValidationMessage("ImageNull")
+                                        @if (Model != null && Model.SubImageId != null)
+                                        {
+                                            var imgid = Model.SubImageId.Split(',');
+                                            var imgname = Model.SubImageName.Split('|');
+                                            var imgurl = Model.SubImageUrl.Split('|');
+                                            for (int i = 0; i < imgid.Count(); i++)
+                                            {
+                                                if (imgid[i] != "")
+                                                {
+                                                    var str = "subimgprize" + imgid[i];
+                                                    var strimg = "txtSubImg" + imgid[i];
+                                                    <div id="@str" class="subimgplace">
+                                                        <a class="fancybox" style="float:left" href="@imgurl[i]">
+                                                            <img src="@imgurl[i]" class="imgth" />
+                                                        </a>
+                                                        <div class="deleteIconB glyphicon glyphicon-remove-circle" onclick="deleteSubImg(@imgid[i],'@imgname[i]','@imgurl[i]')"></div>
+                                                    </div>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Review
+                                </div>
+                                <div class="panel-body">
+                                    @(Html.Kendo().Grid<Adz.User.CMS.Models.RewardModel.Review>()
+                                .Name("grid")
+                                .Columns(columns =>
+                                {
+                                    columns.Bound(p => p.ByEmail).Title("Email");
+                                    columns.Bound(p => p.Rating);
+                                    columns.Bound(p => p.Message).Width(800);
+                                    columns.Bound(p => p.ReviewDate).Format("{0:dd MMM yyyy}").Title("Review Date");
+                                    columns.Bound(p => p.LastAction).ClientTemplate(
+                                    "<a class='gridBtn k-button-icontext k-grid-edit'  href='' onclick='update(#=RedemptionId#)'><span class='fa fa-pencil' title='Update' ></span></a>" +
+                                    "|&nbsp;&nbsp;<a class='gridBtn k-button-icontext k-grid-delete'  href='' onclick='delete_row(#=RedemptionId#)'><span class='fa fa-archive' title='Archive' ></span></a>" +
+                                    "<div id='updatebutton#=RedemptionId#' class='displaynone'><a class='k-button k-button-icontext k-primary k-grid-update' href='' onclick='edit_row(#=RedemptionId#)'><span class='k-icon k-update'></span>Update</a><a class='k-button k-button-icontext k-grid-cancel' href=''><span class='k-icon k-cancel'></span>Cancel</a></div>" +
+                                    "").Title("Action").Filterable(filter => filter.Enabled(false)).Width(120);
+                                })
+                                .Editable(editable => editable.Mode(GridEditMode.InLine))
+                                .DataSource(dataSource => dataSource
+                                    .Ajax()
+                                    .PageSize(10)
+                                    .Events(events => events.Error("error_handler"))
+                                    .Read(read => read.Action("Review_Read", "Reward", new { ReviewId = Model.RewardId }))
+                                    .Update(update => update.Action("Review_Update", "Reward"))
+                                    .Destroy(destroy => destroy.Action("Review_Destroy", "Reward"))
+                                    .Model(model =>
+                                    {
+                                        model.Field(m => m.ByEmail).Editable(false);
+                                        model.Field(m => m.ReviewDate).Editable(false);
+                                        model.Field(m => m.LastAction).Editable(false);
+                                        model.Id(p => p.RedemptionId);
+                                    })
+                                    .Filter(filter => filter.Add(p => p.LastAction).IsNotEqualTo("5"))
+                                )
+                                .Events(events => events.DataBound("CheckIfEmpty"))
+                                .Filterable(filterable => filterable
+                                    .Extra(false)
+                                        .Operators(operators => operators
+                                        .ForString(str => str.Clear()
+                                            .StartsWith("Starts with")
+                                            .Contains("Contains")
+                                        ))
+                                )
+                                .Pageable(page => page
+                                    .Refresh(true)
+                                    .PageSizes(true)
+                                )
+                                .Sortable(sortable => sortable
+                                    .AllowUnsort(true)
+                                    .SortMode(GridSortMode.MultipleColumn))
+                                .Resizable(resize => resize.Columns(true))
+                                .Reorderable(reorder => reorder.Columns(true))
+                                    )
+
+                                    <div class="displaynone text-center" id="grid-empty">
+                                        No Review Found!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <input type="submit" value="Update" class="k-button" onclick="return UpdateConf()" />
+                            <a href="@Url.Action("Reward","Reward")" class="k-button">Cancel</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Name").focus();
+        $("#subImagebtn").click(function () {
+            $("#tempChoose").val("");
+            $("#tempChooseUrl").val("");
+            $("#tempChooseName").val("");
+            $.fancybox.open({
+                href: '@Url.Action("ImageMulti", "Image")',
+                type: 'iframe',
+                padding: 0,
+                afterClose: function () {
+                    if ($("#tempChoose").val() != "") {
+                        var ch = $("#tempChoose").val().split('|');
+                        var chi = $("#tempChooseName").val().split('|');
+                        var chu = $("#tempChooseUrl").val().split('|');
+                        var html = "";
+                        for (var i = 0; i < ch.length; i++) {
+                            if (ch[i] != '') {
+                                html += '<div id="subimgprize' + ch[i] + '" class="subimgplace"><a  class="fancybox" href="' + chu[i] + '"><img src="' + chu[i] + '" class="imgth" /></a>';
+                                var cho = ch[i] + ",'" + chi[i] + "','" + chu[i] + "'";
+                                //html += ' <div class="subimghalf"><input type="text" class="medium" id="txtSubImg' + ch[i] + '" name="txtSubImg' + ch[i] + '"></div>';
+                                html += ' <div class="deleteIconB glyphicon glyphicon-remove-circle" onclick="deleteSubImg(' + cho + ')"></div></div>';
+                                $("#SubImageId").val($("#SubImageId").val() + "," + ch[i]);
+                                $("#SubImageName").val($("#SubImageName").val() + "|" + chi[i]);
+                                $("#SubImageUrl").val($("#SubImageUrl").val() + "|" + chu[i]);
+                            }
+                        }
+                        $("#subimageplace").append(html);
+                        $("#tempChoose").val("");
+                        $("#tempChooseUrl").val("");
+                        $("#tempChooseName").val("");
+                    }
+                }
+            });
+        });
+    });
+    function deleteSubImg(id, name, url) {
+        $("#subimgprize" + id).remove();
+        var current = $("#SubImageId").val();
+        current = current.replace(id, '');
+        $("#SubImageId").val(current);
+        var currentname = $("#SubImageName").val();
+        currentname = currentname.replace(name, '');
+        $("#SubImageName").val(currentname);
+        var currenturl = $("#SubImageUrl").val();
+        currenturl = currenturl.replace(url, '');
+        $("#SubImageUrl").val(currenturl);
+    }
+
+    function UpdateConf() {
+        var r = confirm("Confirm update Reward information?");
+        if (r == true) { edit_delete_finalize(); return true; }
+        else return false;
+    }
+</script>
+
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var result = "";
+            var message = "";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message = this;
+                    });
+                }
+            });
+            if (message != "") {
+                result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Error</h4>'
+                + message
+                + '</div>';
+
+                $("#msgbox").html(result);
+            }
+        }
+    }
+
+    function CheckIfEmpty(e) {
+        if (e.sender._data.length == 0) {
+            $('#grid').hide();
+            $('#grid-empty').show();
+        }
+    }
+
+    var edit_rating_array = new Array();
+    var edit_message_array = new Array();
+    var edit_id_array = new Array();
+    var delete_array = new Array();
+
+    function update(id) {
+        $('#updatebutton' + id).show();
+    }
+
+    function edit_row(id) {
+        var idx = jQuery.inArray(id, edit_id_array);
+        if (idx != -1) {
+            edit_id_array.splice(idx, 1);
+            edit_rating_array.splice(idx, 1);
+            edit_message_array.splice(idx, 1);
+        }
+        edit_id_array.push(id);
+        edit_rating_array.push($('#Rating').val());
+        edit_message_array.push($('#Message').val());
+    }
+
+    function delete_row(id) {
+        delete_array.push(id);
+        
+        var idx = jQuery.inArray(id, edit_id_array);
+        if (idx != -1) {
+            edit_id_array.splice(idx, 1);
+            edit_rating_array.splice(idx, 1);
+            edit_message_array.splice(idx, 1);
+        }
+    }
+
+    function edit_delete_finalize() {
+        var temp = "";
+        $.each(delete_array, function (index, value) {
+            temp += value + "|";
+        });
+        $('#tempDeleteId').val(temp);
+        
+        temp = "";
+        $.each(edit_id_array, function (index, value) {
+            temp += value + "|";
+        });
+        $('#tempEditId').val(temp);
+
+        temp = "";
+        $.each(edit_rating_array, function (index, value) {
+            temp += value + "|";
+        });
+        $('#tempEditRating').val(temp);
+
+        temp = "";
+        $.each(edit_message_array, function (index, value) {
+            temp += value + "#|#";
+        });
+        $('#tempEditMessage').val(temp);
+    }
+
+</script>
+

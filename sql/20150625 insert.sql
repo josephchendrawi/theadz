@@ -1,0 +1,1 @@
+insert into [RedemptionStatus]([name])values('Cancelled');

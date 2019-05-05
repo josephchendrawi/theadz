@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="df7ea37be5404229a7e74897d7ed1925" Name="Diagram1" ZoomLevel="61">
+        <EntityTypeShape EntityType="TheAdzModel.Admin" Width="1.5" PointX="3.75" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Banner" Width="1.5" PointX="8.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.BannerImage" Width="1.5" PointX="8.75" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Billing" Width="1.5" PointX="13.5" PointY="24.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.BillingUser" Width="1.5" PointX="5.25" PointY="21.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.BVD" Width="1.5" PointX="10.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.BVDImage" Width="1.5" PointX="10.75" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.CallbackMOLLog" Width="1.5" PointX="10.75" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Campaign" Width="1.5" PointX="17.625" PointY="13.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.City" Width="1.5" PointX="3.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Country" Width="1.5" PointX="1.5" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Currency" Width="1.5" PointX="1.5" PointY="10.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Email" Width="1.5" PointX="12.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.EmailSendLog" Width="1.5" PointX="0.75" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Facebook" Width="1.5" PointX="5.25" PointY="27.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.FlashDeal" Width="1.5" PointX="8.25" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Game" Width="1.5" PointX="6" PointY="45.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.GameTransaction" Width="1.5" PointX="8.25" PointY="27.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Image" Width="1.5" PointX="0.75" PointY="28.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.InventoryItemImage" Width="1.5" PointX="12.75" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.InventoryItem" Width="1.5" PointX="6" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.InventoryItemTag" Width="1.5" PointX="12.75" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.InventoryItemType" Width="1.5" PointX="3.75" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.KPointAction" Width="1.5" PointX="12.75" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.KPointTrxD" Width="1.5" PointX="7.5" PointY="33.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.KPointTrxH" Width="1.5" PointX="5.25" PointY="34.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Logger" Width="1.5" PointX="10.75" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.MerchantImage" Width="1.5" PointX="12.75" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Merchant" Width="1.5" PointX="3.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.PreCode" Width="1.5" PointX="14.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Shipping" Width="1.5" PointX="13.5" PointY="30" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.ShippingUser" Width="1.5" PointX="5.25" PointY="40.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.State" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Static" Width="1.5" PointX="14.75" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Status" Width="1.5" PointX="1.5" PointY="17.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.SubscribeEmail" Width="1.5" PointX="12.75" PointY="17" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.TransactionDetail" Width="1.5" PointX="16.5" PointY="28" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.TransactionFreeDeal" Width="1.5" PointX="8.25" PointY="22.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Transaction" Width="1.5" PointX="11.25" PointY="26" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.User" Width="1.5" PointX="3" PointY="25.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.UserStatu" Width="1.5" PointX="0.75" PointY="25.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Variance" Width="1.5" PointX="8.25" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.WebExceptionLogger" Width="1.5" PointX="14.75" PointY="17" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.Winner" Width="1.5" PointX="16.5" PointY="24" IsExpanded="true" />
+        <EntityTypeShape EntityType="TheAdzModel.WishList" Width="1.5" PointX="10.25" PointY="34.125" IsExpanded="true" />
+        <AssociationConnector Association="TheAdzModel.FK_InventoryItems_Admins" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Billing_Transactions" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_BillingUser_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Campaign_Merchants" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Cities_Countries" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Cities_Currencies" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_InventoryItems_Cities" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Merchants_Cities" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Cities_States" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Facebook_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_FlashDeal_InventoryItems" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_GameTransactions_Games" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_GameTransactions_Transactions" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_GameTransactions_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Users_Images" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_InventoryItems_InventoryItemTypes" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_InventoryItems_Merchants" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_KPointTrxD_InventoryItems" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_TransactionDetails_InventoryItems" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_TransactionFreeDeals_InventoryItems" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Variance_InventoryItems" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Winner_InventoryItems" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_WishList_InventoryItems" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_KPointTrxD_KPointTrxH" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_KPointTrxD_Transactions" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_KPointTrxH_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Merchants_Status" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Shipping_Transactions" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_ShippingUser_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_TransactionDetails_Transactions" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_TransactionFreeDeals_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Transactions_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Winner_Transactions" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Users_UserStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_Winner_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="TheAdzModel.FK_WishListt_Users" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="TheAdzModel.CampaignImage" Width="1.5" PointX="8.25" PointY="38.5" />
+        <AssociationConnector Association="TheAdzModel.FK_CampaignImages_Campaign" />
+        <EntityTypeShape EntityType="TheAdzModel.Branch" Width="1.5" PointX="6" PointY="18.375" />
+        <AssociationConnector Association="TheAdzModel.FK_Branch_Merchants" />
+        <AssociationConnector Association="TheAdzModel.FK_Branch_Cities" />
+        <EntityTypeShape EntityType="TheAdzModel.APIKey" Width="1.5" PointX="5.25" PointY="50.75" />
+        <AssociationConnector Association="TheAdzModel.FK_APIKeys_Users" />
+        <EntityTypeShape EntityType="TheAdzModel.CampaignHistory" Width="1.5" PointX="11.25" PointY="20.25" />
+        <AssociationConnector Association="TheAdzModel.FK_CampaignHistory_Campaign" />
+        <AssociationConnector Association="TheAdzModel.FK_CampaignHistory_Users" />
+        <EntityTypeShape EntityType="TheAdzModel.Reward" Width="1.5" PointX="19.625" PointY="1.125" />
+        <EntityTypeShape EntityType="TheAdzModel.RewardCriteria" Width="1.5" PointX="17.375" PointY="2.75" />
+        <EntityTypeShape EntityType="TheAdzModel.RewardImage" Width="1.5" PointX="17.375" PointY="6.75" />
+        <AssociationConnector Association="TheAdzModel.FK_Reward_RewardCriteria" />
+        <AssociationConnector Association="TheAdzModel.FK_RewardImages_Reward" />
+        <EntityTypeShape EntityType="TheAdzModel.AdminModule" Width="1.5" PointX="3" PointY="22.375" />
+        <EntityTypeShape EntityType="TheAdzModel.AdminRole" Width="1.5" PointX="0.75" PointY="6.875" />
+        <AssociationConnector Association="TheAdzModel.FK_Admins_AdminRole" />
+        <EntityTypeShape EntityType="TheAdzModel.AdminRoleAccess" Width="1.5" PointX="14.25" PointY="20.125" />
+        <AssociationConnector Association="TheAdzModel.FK_AdminRoleAccess_Modules" />
+        <AssociationConnector Association="TheAdzModel.FK_AdminRoleAccess_AdminRole" />
+        <EntityTypeShape EntityType="TheAdzModel.Tag" Width="1.5" PointX="15.375" PointY="9.875" />
+        <AssociationConnector Association="TheAdzModel.CampaignPrimaryTag" />
+        <AssociationConnector Association="TheAdzModel.CampaignSecondaryTag" />
+        <EntityTypeShape EntityType="TheAdzModel.CampaignPrimaryTag" Width="1.5" PointX="19.875" PointY="12.625" />
+        <AssociationConnector Association="TheAdzModel.FK_CampaignPrimaryTag_Campaign" />
+        <AssociationConnector Association="TheAdzModel.FK_CampaignPrimaryTag_Tag" />
+        <EntityTypeShape EntityType="TheAdzModel.CampaignSecondaryTag" Width="1.5" PointX="19.875" PointY="9.75" />
+        <AssociationConnector Association="TheAdzModel.FK_CampaignSecondaryTag_Campaign" />
+        <AssociationConnector Association="TheAdzModel.FK_CampaignSecondaryTag_Tag" />
+        <EntityTypeShape EntityType="TheAdzModel.MobileOperator" Width="1.5" PointX="19.625" PointY="21.5" />
+        <EntityTypeShape EntityType="TheAdzModel.RedemptionStatu" Width="1.5" PointX="19.625" PointY="19.125" />
+        <EntityTypeShape EntityType="TheAdzModel.RewardType" Width="1.5" PointX="17.375" PointY="18.875" />
+        <AssociationConnector Association="TheAdzModel.FK_Reward_RewardType" />
+        <EntityTypeShape EntityType="TheAdzModel.Review" Width="1.5" PointX="24.125" PointY="17" />
+        <EntityTypeShape EntityType="TheAdzModel.Redemption" Width="1.5" PointX="21.875" PointY="16.25" />
+        <AssociationConnector Association="TheAdzModel.FK_Redemptions_MobileOperator" />
+        <AssociationConnector Association="TheAdzModel.FK_Redemptions_RedemptionStatus" />
+        <AssociationConnector Association="TheAdzModel.FK_Redemptions_Reward" />
+        <AssociationConnector Association="TheAdzModel.FK_Redemptions_Users" />
+        <AssociationConnector Association="TheAdzModel.FK_Review_Redemptions" />
+        <EntityTypeShape EntityType="TheAdzModel.MobileLog" Width="1.5" PointX="22.375" PointY="0.75" />
+        <EntityTypeShape EntityType="TheAdzModel.CampaignRule" Width="1.5" PointX="21.875" PointY="23.5" />
+        <AssociationConnector Association="TheAdzModel.FK_Rules_Campaign" />
+        <AssociationConnector Association="TheAdzModel.FK_CampaignRules_Images" />
+        <EntityTypeShape EntityType="TheAdzModel.APILog" Width="1.5" PointX="22.375" PointY="4.75" />
+        <EntityTypeShape EntityType="TheAdzModel.UserTrx" Width="1.5" PointX="22.375" PointY="8.75" />
+        <EntityTypeShape EntityType="TheAdzModel.PushNotificationLog" Width="1.5" PointX="24.375" PointY="0.75" />
+        <EntityTypeShape EntityType="TheAdzModel.PromotionTrx" Width="1.5" PointX="16.25" PointY="32" />
+        <AssociationConnector Association="TheAdzModel.FK_PromotionTrx_Users" />
+        <EntityTypeShape EntityType="TheAdzModel.Promotion" Width="1.5" PointX="24.375" PointY="4" />
+        <AssociationConnector Association="TheAdzModel.FK_PromotionTrx_Promotion" />
+        <AssociationConnector Association="TheAdzModel.FK_Transactions_Promotion" />
+        <AssociationConnector Association="TheAdzModel.FK_UserTrx_Users" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

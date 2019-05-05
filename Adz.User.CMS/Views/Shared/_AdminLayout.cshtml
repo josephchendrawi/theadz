@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+
+    <link href="@Url.Content("~/Content/Admin.css")" rel="stylesheet" type="text/css" />
+
+    <link href="@Url.Content("~/Content/font-awesome.min.css")" rel="stylesheet" type="text/css" />
+
+    <link href="@Url.Content("~/Content/ionicons.min.css")" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.common.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.default.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.dataviz.min.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.dataviz.default.min.css")" />
+
+    <script src="@Url.Content("~/Scripts/kendo/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/kendo.all.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/kendo.aspnetmvc.min.js")"></script>
+    <script src="~/Scripts/kendo/kendo.angular.min.js"></script>
+
+    <script type="text/javascript">
+        function changeverticalnav(i) {
+            var list = document.getElementById('sidebar-nav').children[0];
+            list.children[i].classList.add("active");
+        }
+    </script>
+
+    @{
+        var ViewUnAuth = Adz.BLL.Lib.AdminService.GetRoleViewAuth().Result;
+    }
+
+    @foreach (var v in ViewUnAuth)
+    {
+        <style>
+            .sidebar-@v.ToLower()
+            {
+                display: none !important;
+            }
+        </style>
+    }
+</head>
+<body>
+    <div id="container">
+        <div class="navbar navbar-top-custom navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">The Adz</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        @*<li><a href="#"><i class="glyphicon glyphicon-envelope"></i></a></li>
+                        <li><a href="#"><i class="glyphicon glyphicon-tasks"></i></a></li>*@
+                        <li>
+                            <a href="#">
+                                <i class="glyphicon glyphicon-user"></i>
+                                <span>@Adz.Helper.currAdminName</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("LogOut", "Admin")">
+                                <span>Log Out</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    @*<form class="navbar-form navbar-right">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter keyword to search..." size="50">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                            </span>
+                        </div>
+                    </form>*@
+                </div>
+            </div>
+        </div>
+
+        <div class="wrap">
+            <div class="leftwrap">
+                <div class="sidebar"></div>
+                <div id="sidebar-nav">
+                    <ul>
+                        <li class="sidebar-brand1"><i class="fa fa-tachometer"></i> <span>Performance</span></li>
+                        <li>
+                            <a href="@Url.Action("Index","Admin")">
+                                <i class="fa fa-pie-chart"></i> <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-brand sidebar-user"><i class="fa fa-users"></i> <span>User Management</span></li>
+                        <li class="sidebar-user">
+                            <a href="@Url.Action("User","User")">
+                                <i class="fa fa-user"></i> <span>User Information</span>
+                            </a>
+                        </li>
+                        
+                        @*<li>
+                            <a href="#">
+                                <i class="fa fa-archive"></i> <span>User Archive</span>
+                            </a>
+                        </li>*@
+                        
+                        <li class="sidebar-brand sidebar-merchant"><i class="fa fa-dollar"></i> <span>Merchant Management</span></li>
+                        <li class="sidebar-merchant">
+                            <a href="@Url.Action("Merchant","Merchant")">
+                                <i class="fa fa-user"></i> <span>Merchant Information</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-merchant">
+                            <a href="@Url.Action("MerchantArchive", "Merchant")">
+                                <i class="fa fa-archive"></i> <span>Merchant Archive</span>
+                            </a>
+                        </li>
+                        
+                        <li class="sidebar-brand sidebar-campaign"><i class="fa fa-flag"></i> <span>Campaign Management</span></li>
+                        <li class="sidebar-campaign">
+                            <a href="@Url.Action("Campaign", "Campaign")">
+                                <i class="fa fa-flag-checkered"></i> <span>Campaign Information</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-campaign">
+                            <a href="@Url.Action("CampaignArchive", "Campaign")">
+                                <i class="fa fa-archive"></i> <span>Campaign Archive</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-campaign">
+                            <a href="@Url.Action("Tag", "Campaign")">
+                                <i class="fa fa-tags"></i> <span>Tag Information</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-campaign">
+                            <a href="@Url.Action("TagArchive", "Campaign")">
+                                <i class="fa fa-archive"></i> <span>Tag Archive</span>
+                            </a>
+                        </li>
+                        
+                            
+                        <li class="sidebar-brand sidebar-reward"><i class="fa fa-gift"></i> <span>Reward Management</span></li>
+                        <li class="sidebar-reward">
+                            <a href="@Url.Action("Reward", "Reward")">
+                                <i class="fa fa-gift"></i> <span>Reward Information</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-reward">
+                            <a href="@Url.Action("RewardArchive", "Reward")">
+                                <i class="fa fa-archive"></i> <span>Reward Archive</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-brand sidebar-reward"><i class="fa fa-hand-o-right"></i> <span>Redemption Management</span></li>
+                        <li class="sidebar-redemption">
+                            <a href="@Url.Action("Redemption", "Redemption")">
+                                <i class="fa fa-tasks"></i> <span>Redemption Information</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-brand"><i class="fa fa-bell-o"></i> <span>Promotion Management</span></li>
+                        <li class="sidebar-promotion">
+                            <a href="@Url.Action("Promotion", "Promotion")">
+                                <i class="fa fa-bell"></i> <span>Promotion Information</span>
+                            </a>
+                        </li>
+                        
+                        <li class="sidebar-brand"><i class="fa fa-gear"></i> <span>Reporting Tools</span></li>
+                        <li>
+                            <a href="@Url.Action("AdsPerformanceUsage", "Reporting")">
+                                <i class="fa fa-file-text"></i> <span>Ads Performance / Usage</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("OverallUserStatus", "Reporting")">
+                                <i class="fa fa-file-text"></i> <span>Overall Status</span>
+                            </a>
+                        </li>
+                          
+                        <li class="sidebar-brand sidebar-admin"><i class="fa fa-user-md"></i> <span>Admin Role Managements</span></li>
+                        <li class="sidebar-admin">
+                            <a href="@Url.Action("Admin", "Admin")">
+                                <i class="fa fa-male"></i> <span>Admin Information</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-admin">
+                            <a href="@Url.Action("AdminRole", "Admin")">
+                                <i class="fa fa-user-md"></i> <span>Admin Role Information</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-brand sidebar-admin"><i class="fa fa-info-circle"></i> <span>Push Notification</span></li>
+                        <li class="sidebar-admin">
+                            <a href="@Url.Action("Add", "PushNotification")">
+                                <i class="fa fa-send"></i> <span>Send To All Users</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-brand sidebar-admin"><i class="fa fa-cogs"></i> <span>Settings</span></li>
+                        <li class="sidebar-admin">
+                            <a href="@Url.Action("DailyReport", "Setting")">
+                                <i class="fa fa-cog"></i> <span>Daily Report</span>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+
+            <div class="rightwrap">
+                @RenderBody()
+            </div>
+        </div>
+
+        <div class="navbar navbar-footer-custom navbar-fixed-bottom" role="navigation">
+            <div class="footer">
+                <span style="float:left">
+                    <a href="#">Privacy Policy</a>  |
+                    <a href="#">Terms of Use</a>  |
+                    Powered by Appstream
+                </span>
+                <span style="float:right">Copyright © @DateTime.Now.Year Appstream Sdn. Bhd. All rights reserved. Version @System.Configuration.ConfigurationManager.AppSettings["version"]</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!---Bootstrap--->
+    <script src="@Url.Content("~/Scripts/js/bootstrap.min.js")" type="text/javascript"></script>
+</body>
+</html>

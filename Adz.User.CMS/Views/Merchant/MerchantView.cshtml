@@ -1,0 +1,208 @@
+﻿@model Adz.User.CMS.Models.MerchantModel.Merchant
+@{
+    ViewBag.Title = "Merchant View";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script src="@Url.Content("~/Scripts/jquery.fancybox.js")" type="text/javascript"></script>
+<link rel="stylesheet" href="@Url.Content("~/Content/fancy/jquery.fancybox.css")">
+<script type="text/javascript">
+    $(document).ready(function () {
+        @if (Model.LastAction != "5") { 
+            <text>changeverticalnav(5);</text>
+        }
+        else
+        {
+            <text>changeverticalnav(6);</text>
+        }
+        $(document).tooltip();
+        $('.fancybox').fancybox();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>Merchant Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a href="@Url.Action("Merchant", "Merchant")">Merchant</a> /
+        <a>Merchant View</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        if (ViewBag.msg == "a1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Merchant successfully created.
+            </div>
+        }
+        else if (ViewBag.msg == "a2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Create Merchant failed.
+            </div>
+        }
+        else if (ViewBag.msg == "e1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                Merchant successfully updated.
+            </div>
+        }
+        else if (ViewBag.msg == "e2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Update Merchant failed.
+            </div>
+        }
+    }
+</div>
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>View Merchant</h4><hr />
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Personal Information
+                            </div>
+                            <div class="panel-body">
+                                <div class="leftcol">@Html.LabelFor(model => model.Name)</div>
+                                <div class="rightcol">@Model.Name</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.ContactNumber)</div>
+                                <div class="rightcol">@Model.ContactNumber</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Email)</div>
+                                <div class="rightcol">@Model.Email</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Website)</div>
+                                <div class="rightcol">@Model.Website</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Facebook)</div>
+                                <div class="rightcol">@Model.Facebook</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Description)</div>
+                                <div class="rightcol">@Model.Description</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.SubImageUrl)</div>
+                                <div class="rightcol">
+                                    @{
+                                        var listsuburl = Model.SubImageUrl.Split('|');
+                                        var listsuburllink = Model.SubImageUrlLink.Split('|');
+                                    }
+                                    @for (int i = 0; i < listsuburl.Count(); i++)
+                                    {
+                                        if (listsuburl[i] != "")
+                                        {
+                                            <div class="subimgplace">
+                                                <a class="fancybox" href="@listsuburl[i]">
+                                                    <img src="@listsuburl[i]" class="imgth" />
+                                                </a>
+                                                @*<div class="subimghalf">
+                                                        @listsuburllink[i]
+                                                    </div>*@
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Location
+                            </div>
+                            <div class="panel-body">
+                                <div class="leftcol">@Html.LabelFor(model => model.AddressLine1)</div>
+                                <div class="rightcol">@Model.AddressLine1</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.CountryId)</div>
+                                <div class="rightcol">@Model.Country.CountryName</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.CityId)</div>
+                                <div class="rightcol">@Model.City.CityName</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.PostCode)</div>
+                                <div class="rightcol">@Model.PostCode</div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Campaign Lists
+                            </div>
+                            <div class="panel-body">
+                                <ul class="list-group ul-nobullet">
+                                    @foreach (var v in Model.Campaigns)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("CampaignView","Campaign")?campaignid=@v.CampaignId">@v.Name</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Branches
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Address</th>
+                                            <th>City</th>
+                                            <th>Country</th>
+                                            <th>Postcode</th>
+                                            <th>Map</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var v in Model.Branches) { 
+                                            <tr>
+                                                <td>@v.AddressLine1</td>
+                                                <td>@v.City.CityName</td>
+                                                <td>@v.Country.CountryName</td>
+                                                <td>@v.PostCode</td>
+                                                <td><a class="a-hand-cursor" onclick="fancyboxMap(@v.Latitude, @v.Longitude)">View</a></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        @if (Model.LastAction != "5")
+                        {
+                            <a href="@Url.Action("MerchantEdit","Merchant")?MerchantId=@Model.MerchantId" class="k-button">Edit</a>
+                            <a href="@Url.Action("Merchant","Merchant")" class="k-button">Back</a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("MerchantArchive", "Merchant")" class="k-button">Back</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function fancyboxMap(lat, lng) {
+        var parameter = "?lat=" + lat + "&lng=" + lng;
+        $.fancybox.open({
+            href: '@Url.Action("GoogleMap", "Admin")'+parameter,
+            type: 'iframe',
+            padding: 0
+        });
+    }
+</script>

@@ -1,0 +1,175 @@
+﻿
+@{
+    ViewBag.Title = "User";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(3);
+        $(document).tooltip();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>User Information <a href="@Url.Action("UserAdd","User")" class="btn btn-default btn-sm"><i class="fa fa-plus-square"></i> <span>Add</span></a> <a href="@Url.Action("UserDownloadCSV","User")" class="btn btn-default btn-sm"><i class="fa fa-download"></i> <span>Download Complete Data (CSV)</span></a></h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a>User Information</a>
+    </div>  
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        if (ViewBag.msg == "a1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                User successfully created.
+            </div>
+        }
+        else if (ViewBag.msg == "a2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Create user failed.
+            </div>
+        }
+        else if (ViewBag.msg == "e1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                User successfully updated.
+            </div>
+        }
+        else if (ViewBag.msg == "e2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Update User failed.
+            </div>
+        }
+    }
+</div>
+
+<div style="padding-left: 10px;">
+    <h4>Search</h4>
+    <span><input type="text" id="filter-text" style="height: 35px; width: 200px;" /></span>
+    <span>
+        <select id="filter-by" class="btn btn-default" style="height: 35px;">
+            <option value="fname">First Name</option>
+            <option value="lname">Last Name</option>
+            <option value="email">Email</option>
+        </select>
+    </span>
+    <span class="btn btn-default" onclick="filter();" style="height: 35px;">Search</span>
+</div>
+
+<div class="line-light"></div>
+
+@(Html.Kendo().Grid<Adz.User.CMS.Models.UserModel.User>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.UserStatus.UserStatusName).Title("Status");
+        columns.Bound(p => p.FirstName).Title("First Name");
+        columns.Bound(p => p.LastName).Title("Last Name");
+        columns.Bound(p => p.Email);
+        columns.Bound(p => p.Create).Format("{0:dd MMM yyyy}").Title("Created On");
+        columns.Bound(p => p.UserStatus.UserStatusId).ClientTemplate(
+            "<a class='gridBtn' href='UserView?UserId=#=UserId#'><span class='fa fa-eye' title='View' ></span></a>&nbsp;&nbsp;" +
+            "|&nbsp;&nbsp;<a class='gridBtn' href='UserEdit?UserId=#=UserId#'><span class='fa fa-pencil' title='Edit' ></span></a>&nbsp;&nbsp;"
+            //"#if(UserStatus.UserStatusId!='3'){#" +
+            //"|&nbsp;&nbsp;<a class='gridBtn k-button-icontext k-grid-delete'  href=''>Suspend</a>" +
+            //"#}#"
+            ).Title("Action").Filterable(filter => filter.Enabled(false));
+    })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .Events(events => events.Error("error_handler"))
+        .Read(read => read.Action("User_Read", "User"))
+        .Model(model =>
+        {
+            model.Id(p => p.UserId);
+        })
+    )
+    //.Events(events => events.DataBound("onDataBound").Change("onChange"))
+    .Filterable(filterable => filterable
+        .Extra(false)
+            .Operators(operators => operators
+            .ForString(str => str.Clear()
+                .StartsWith("Starts with")
+                .Contains("Contains")
+            ))
+    )
+    .Pageable(page => page
+        .Refresh(true)
+        .PageSizes(true)
+    )
+    //.Scrollable(scr => scr.Height(280))
+    .Sortable(sortable => sortable
+        .AllowUnsort(true)
+        .SortMode(GridSortMode.MultipleColumn))
+    //.Groupable()
+    .Resizable(resize => resize.Columns(true))
+    .Reorderable(reorder => reorder.Columns(true))
+)
+
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var result = "";
+            var message = "";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message = this;
+                    });
+                }
+            });
+            if (message != "") {
+                result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Error</h4>'
+                + message
+                + '</div>';
+
+                $("#msgbox").html(result);
+            }
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    function filter() {
+        var filterby = $('#filter-by').find(":selected").val();
+
+        var grid = $("#grid").data("kendoGrid");
+        $filter = new Array();
+
+        if (filterby == "fname") {
+            $filter.push({ field: "FirstName", operator: "contains", value: $('#filter-text').val() });
+        }
+        else if (filterby == "lname") {
+            $filter.push({ field: "LastName", operator: "contains", value: $('#filter-text').val() });
+        }
+        else if (filterby == "email") {
+            $filter.push({ field: "Email", operator: "contains", value: $('#filter-text').val() });
+        }
+        grid.dataSource.filter($filter);
+    }
+
+    $('#filter-text').on("keypress", function (e) {
+        if (e.which == 13) {
+            filter();
+            return false; // prevent the button click from happening
+        }
+    });
+</script>

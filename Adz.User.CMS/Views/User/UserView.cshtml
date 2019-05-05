@@ -1,0 +1,194 @@
+﻿@model Adz.User.CMS.Models.UserModel.User
+@{
+    ViewBag.Title = "View User";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@using Kendo.Mvc.UI
+<script type="text/javascript">
+    $(document).ready(function () {
+        changeverticalnav(3);
+        $(document).tooltip();
+    });
+</script>
+
+<div class="rightheader">
+    <h1>User Information</h1>
+    <div class="pagelink">
+        <a href="#">Admin Portal</a> /
+        <a href="@Url.Action("User", "User")">User</a> /
+        <a>User View</a>
+    </div>
+</div>
+
+<div id="msgbox">
+    @if (ViewBag.msg != null && ViewBag.msg != "")
+    {
+        if (ViewBag.msg == "a1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                User successfully created.
+            </div>
+        }
+        else if (ViewBag.msg == "a2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Create user failed.
+            </div>
+        }
+        else if (ViewBag.msg == "e1")
+        {
+            <div class="alert alert-block alert-success">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Success!</h4>
+                User successfully updated.
+            </div>
+        }
+        else if (ViewBag.msg == "e2")
+        {
+            <div class="alert alert-block alert-danger">
+                <a class="close" data-dismiss="alert" href="#">X</a>
+                <h4 class="alert-heading">Error</h4>
+                Update User failed.
+            </div>
+        }
+    }
+</div>
+
+<div class="rightcontent">
+    <div class="rightrow">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>User</h4><hr />
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Personal Information
+                            </div>
+                            <div class="panel-body">
+                                <div class="leftcol">@Html.LabelFor(model => model.FirstName)</div>
+                                <div class="rightcol">@Model.FirstName</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.LastName)</div>
+                                <div class="rightcol">@Model.LastName</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Email)</div>
+                                <div class="rightcol">@Model.Email</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.Gender)</div>
+                                <div class="rightcol">@if (Model.Gender == 1)
+                                                      { <text>Male</text> }
+                                                      else if (Model.Gender == 2)
+                                                      { <text>Female</text> }
+                                                      else
+                                                      { <text>-</text>}</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.ContactNumber)</div>
+                                <div class="rightcol">@Model.ContactNumber</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.DateOfBirth)</div>
+                                <div class="rightcol">@string.Format("{0:dd MMM yyyy}", Model.DateOfBirth)</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.UserStatus)</div>
+                                <div class="rightcol">@Model.UserStatus.UserStatusName</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.SubImageUrl)</div>
+                                <div class="rightcol">
+                                    @{
+                                        var listsuburl = Model.SubImageUrl.Split('|');
+                                        var listsuburllink = Model.SubImageUrlLink.Split('|');
+                                    }
+                                    @for (int i = 0; i < listsuburl.Count(); i++)
+                                    {
+                                        if (listsuburl[i] != "")
+                                        {
+                                            <div class="subimgplace">
+                                                <a class="fancybox" href="@listsuburl[i]">
+                                                    <img src="@listsuburl[i]" class="imgth" />
+                                                </a>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                                <div class="leftcol">@Html.LabelFor(model => model.PointBalance)</div>
+                                <div class="rightcol">@Model.PointBalance</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.ReferralCode)</div>
+                                <div class="rightcol">@Model.ReferralCode</div>
+                                <div class="leftcol">@Html.LabelFor(model => model.ReferredBy)</div>
+                                <div class="rightcol">@Model.ReferredBy</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                User Usage
+                            </div>
+                            <div class="panel-body">
+                                @(Html.Kendo().Grid<Adz.User.CMS.Models.CampaignModel.CampaignHistoryGroupByDate>()
+                                .Name("grid")
+                                .Columns(columns =>
+                                        {
+                                            columns.Bound(p => p.Date).Format("{0:dd MMM yyyy}");
+                                            columns.Bound(p => p.Description);
+                                            columns.Bound(p => p.Points);
+                                        })
+                                .DataSource(dataSource => dataSource
+                                    .Ajax()
+                                    .PageSize(20)
+                                    .Events(events => events.Error("error_handler"))
+                                            .Read(read => read.Action("Campaign_Statistic_By_User_Read", "User", new { UserId = Model.UserId }))
+                                )
+                                .Filterable(filterable => filterable
+                                    .Extra(false)
+                                        .Operators(operators => operators
+                                        .ForString(str => str.Clear()
+                                            .StartsWith("Starts with")
+                                            .Contains("Contains")
+                                        ))
+                                )
+                                .Pageable(page => page
+                                    .Refresh(true)
+                                    .PageSizes(true)
+                                )
+                                .Sortable(sortable => sortable
+                                    .AllowUnsort(true)
+                                    .SortMode(GridSortMode.MultipleColumn))
+                                .Resizable(resize => resize.Columns(true))
+                                .Reorderable(reorder => reorder.Columns(true))
+                                )
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <a href="@Url.Action("UserEdit","User")?UserId=@Model.UserId" class="k-button">Edit</a>
+                        <a href="@Url.Action("User","User")" class="k-button">Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var result = "";
+            var message = "";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message = this;
+                    });
+                }
+            });
+            if (message != "") {
+                result = '<div class="alert alert-block alert-success">'
+                + '<a class="close" data-dismiss="alert" href="#">X</a>'
+                + '<h4 class="alert-heading">Error</h4>'
+                + message
+                + '</div>';
+
+                $("#msgbox").html(result);
+            }
+        }
+    }
+</script>

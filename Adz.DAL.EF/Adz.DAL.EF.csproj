@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6ECFBF6B-448E-4444-A30A-EA5F94A3C711}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Adz.DAL.EF</RootNamespace>
+    <AssemblyName>Adz.DAL.EF</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Admin.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AdminModule.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AdminRole.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AdminRoleAccess.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AdzModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AdzModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AdzModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AdzModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AdzModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="APIKey.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="APILog.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Banner.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BannerImage.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Billing.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BillingUser.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Branch.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BVD.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BVDImage.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CallbackMOLLog.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Campaign.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CampaignHistory.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CampaignImage.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CampaignPrimaryTag.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CampaignRule.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CampaignSecondaryTag.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="City.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Country.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Currency.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Email.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EmailSendLog.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Facebook.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FlashDeal.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Game.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GameTransaction.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Image.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventoryItem.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventoryItemImage.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventoryItemTag.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InventoryItemType.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KPointAction.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KPointTrxD.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="KPointTrxH.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Logger.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Merchant.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MerchantImage.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MobileLog.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MobileOperator.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PreCode.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Promotion.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PromotionTrx.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PushNotificationLog.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Redemption.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RedemptionStatu.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Review.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Reward.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RewardCriteria.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RewardImage.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RewardType.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Shipping.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ShippingUser.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="State.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Static.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Status.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SubscribeEmail.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Tag.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Transaction.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransactionDetail.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransactionFreeDeal.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserStatu.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserTrx.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Variance.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebExceptionLogger.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Winner.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WishList.cs">
+      <DependentUpon>AdzModel.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="AdzModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>AdzModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AdzModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AdzModel.edmx</DependentUpon>
+      <LastGenOutput>AdzModel.Context.cs</LastGenOutput>
+    </None>
+    <None Include="AdzModel.edmx.diagram">
+      <DependentUpon>AdzModel.edmx</DependentUpon>
+    </None>
+    <None Include="AdzModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AdzModel.edmx</DependentUpon>
+      <LastGenOutput>AdzModel.cs</LastGenOutput>
+    </None>
+    <None Include="App.Config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

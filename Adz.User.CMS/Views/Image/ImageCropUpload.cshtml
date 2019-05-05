@@ -1,0 +1,125 @@
+﻿@model Adz.User.CMS.Models.ImageModel.UploadImageModel
+@{
+    ViewBag.Title = "Image Uploader";
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+}
+
+<link href="@Url.Content("~/Content/ImageArea.css")" rel="stylesheet" />
+
+<script src="@Url.Content("~/Scripts/jquery-1.10.2.min.js")"></script>
+<script src="@Url.Content("~/Scripts/jquery.imgareaselect.js")"></script>
+<script src="@Url.Content("~/Scripts/jquery.fancyupload.js")"></script>
+<script>
+    var ias;
+    $(document).ready(function () {
+        initSelect();
+        ias = $('#preview').imgAreaSelect({
+            aspectRatio: '9:16',
+            resizable: true,
+            instance: true,
+        });
+
+        $('#File').on("change", function () {
+            ias.cancelSelection();
+            $('#btn-submit').show();
+        });
+        $('#Url').change(function () {
+            ias.cancelSelection();
+            $('#btn-submit').show();
+        });
+    });
+
+    function uploadConf() {
+        if (ias.getSelection().width == 0 || ias.getSelection().height == 0) {
+            alert("Please select the area of Image first!");
+            return false;
+        }
+        $('#onloading').show();
+    }
+</script>
+
+@using (Html.BeginForm("ImageCropUpload", "Image", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(model => model.X)
+    @Html.HiddenFor(model => model.Y)
+    @Html.HiddenFor(model => model.Width)
+    @Html.HiddenFor(model => model.Height)
+    <div class="container">
+        <h2>Upload an image</h2>
+                <div class="row">
+                    <div class="col-xs-3">
+                        @Html.EditorFor(model => model.IsUrl, new { @class = "form-control" })
+                        @Html.LabelFor(model => model.Url)
+                    </div>
+                    <div class="col-xs-9">
+                        @Html.EditorFor(model => model.Url)
+                        @Html.ValidationMessageFor(model => model.Url)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                        @Html.EditorFor(model => model.IsFile)
+                        @Html.LabelFor(model => model.File)
+                    </div>
+                    <div class="col-xs-9">
+                        <span class="btn btn-success fileinput-button">
+                            <span>Select file</span>
+                            @Html.FileFor(model => model.File)
+                        </span>
+                        @Html.ValidationMessageFor(model => model.File)
+                    </div>
+                </div>
+                <div class="row">
+                    @Html.ValidationSummary(true)
+                </div>
+
+            <div class="row">
+                <img alt="Field for image cutting" id="preview" src="@Url.Content("~/Content/empty.png")" class="img-responsive" />
+                <br />
+                <div class="displaynone" id="btn-submit">
+                    <input type="submit" onclick="return uploadConf();" class="btn btn-primary" />
+                </div>
+            </div>
+    </div>
+}
+
+<div id="onloading" class="displaynone">
+    <img src="@Url.Content("~/Content/ajax-loading.gif")" class="absolute-center">
+</div>
+
+<style>
+    body{
+        padding-top: 30px;
+    }
+
+    #preview {
+        max-height: 360px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .row{
+        padding-top: 3px;
+    }
+
+    #onloading {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        background: rgba(250,250,250,0.4);
+        z-index: 10;
+        margin: auto;
+    }
+
+    .absolute-center {
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+</style>

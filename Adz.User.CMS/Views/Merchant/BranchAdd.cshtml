@@ -1,0 +1,319 @@
+﻿@model Adz.User.CMS.Models.MerchantModel.Branch
+@{
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
+}
+
+@using Kendo.Mvc.UI
+<link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.common.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.default.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.dataviz.min.css")" />
+<link rel="stylesheet" href="@Url.Content("~/Content/kendo/kendo.dataviz.default.min.css")" />
+
+<script src="@Url.Content("~/Scripts/kendo/jquery.min.js")"></script>
+<script src="@Url.Content("~/Scripts/kendo/kendo.all.min.js")"></script>
+<script src="@Url.Content("~/Scripts/kendo/kendo.aspnetmvc.min.js")"></script>
+<script src="~/Scripts/kendo/kendo.angular.min.js"></script>
+<script type="text/javascript"
+        src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDBe9tprDB4drAPp-O4-Ypcer1EOvUUvrQ&sensor=true">
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        @if (ViewBag.msg != null && ViewBag.msg == "a1")
+        {
+        <text>
+        var idx = parseInt(parent.$("#tempAddIdx").val());
+        var branchid = "temp" + idx;
+        parent.$("#branchTable").append(
+            "<tr id=\"row-" + branchid + "\">"
+                + "<td><span id=\"address-" + branchid + "\">@Model.AddressLine1</span></td>"
+                + "<td><span id=\"city-" + branchid + "\">@Model.City.CityName</span><span id=\"cityid-" + branchid + "\" class=\"displaynone\">@Model.City.CityId</span></td>"
+                + "<td><span id=\"country-" + branchid + "\">@Model.Country.CountryName</span><span id=\"countryid-" + branchid + "\" class=\"displaynone\">@Model.Country.CountryId</span></td>"
+                + "<td><span id=\"postcode-" + branchid + "\">@Model.PostCode</span></td>"
+                + "<td><a id=\"fancymap-" + branchid + "\" class=\"a-hand-cursor\" onclick=\"fancyboxMap(@Model.Latitude, @Model.Longitude)\">View</a><span id=\"latitude-" + branchid + "\" class=\"displaynone\">@Model.Latitude</span><span id=\"longitude-" + branchid + "\" class=\"displaynone\">@Model.Longitude</span></td>"
+                + "<td><a class=\"a-hand-cursor\" onclick=\"updateBranch('" + branchid + "')\"><span class='fa fa-pencil' title='Edit'></span></a>"
+                + "<a class=\"a-hand-cursor\" onclick=\"deleteBranch('" + branchid + "')\"><span class='fa fa-archive' title='Delete'></span></a></td>"
+            + "</tr>"
+        );
+
+        parent.$("#msgbox").append(
+            '<div class="alert alert-block alert-success">'
+            + '<a class="close" data-dismiss="alert" href="#">X</a>'
+            + '<h4 class="alert-heading">Success!</h4>'
+            + 'Branch successfully created.'
+            + '</div>'
+        );
+
+        idx++;
+        parent.$("#tempAddIdx").val(idx);
+
+        if (parent.$("#tempAdd").val() == "") {
+            parent.$("#tempAdd").val(branchid);
+        }
+        else {
+            parent.$("#tempAdd").val(parent.$("#tempAdd").val() + "#" + branchid);
+        }
+
+        parent.$.fancybox.close();
+        </text>
+        }
+    });
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.BranchId)
+    @Html.HiddenFor(model => model.Merchant.MerchantId)
+    @Html.HiddenFor(model => model.Latitude)
+    @Html.HiddenFor(model => model.Longitude)
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                @Html.LabelFor(model => model.AddressLine1) <br />
+                @Html.TextBoxFor(model => model.AddressLine1)
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-xs-5">
+                @Html.LabelFor(model => model.Country.CountryId)<span class="must-be-filled">*</span> <br />
+                @(Html.Kendo().DropDownList()
+                                        .Name("countryDropDown")
+                                        .HtmlAttributes(new { @class = "kendoDropdown" })
+                                        .OptionLabel("--Select Country--")
+                                        .DataTextField("CountryName")
+                                        .DataValueField("CountryId")
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("CountryList", "Country");
+                                            });
+                                        })
+                )
+                @Html.HiddenFor(model => model.Country.CountryId)
+                @Html.HiddenFor(model => model.Country.CountryName)
+                @Html.ValidationMessage("CountryNull")
+            </div>
+            <div class="col-xs-5">
+                @Html.LabelFor(model => model.City.CityId)<span class="must-be-filled">*</span> <br />
+                @(Html.Kendo().ComboBox()
+                                        .Name("cityDropDown")
+                                        .HtmlAttributes(new { @class = "kendoDropdown" })
+                                        .Placeholder("--Select City--")
+                                        .DataTextField("CityName")
+                                        .DataValueField("CityId")
+                                        .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("CityList", "Country").Data("filterCity");
+                                            }).ServerFiltering(true);
+                                        })
+                                        .CascadeFrom("countryDropDown")
+                                        .Events(e =>
+                                        {
+                                            e.Change("citychange");
+                                        })
+                )
+                <script>
+                    function filterCity() {
+                        return {
+                            countryid: $("#countryDropDown").val()
+                        };
+                    }
+                    function citychange() {
+                        $("#City_CityId").val($("#cityDropDown").val());
+                        $("#City_CityName").val($('#cityDropDown').data("kendoComboBox").text());
+                    };
+                </script>
+                @Html.HiddenFor(model => model.City.CityId)
+                @Html.HiddenFor(model => model.City.CityName)
+                @Html.ValidationMessage("CityNull")
+            </div>
+            <div class="col-xs-2">
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-xs-3">
+                @Html.LabelFor(model => model.PostCode) <br />
+                @Html.TextBoxFor(model => model.PostCode)
+            </div>
+            <div class="col-xs-3">
+                <br />
+                <div class="k-button" onclick="PostLocate()">Locate Coordinate</div>
+            </div>
+            <div class="col-xs-6">
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            @Html.HiddenFor(model => model.TempLatLong)
+            <div class="col-lg-12">
+                Click on the map to set preferred coordinate.
+                <div class="map_smallcanvas" id="map_canvas"></div>
+                <script type="text/javascript">
+                    $(function () {
+                        initialize();
+                    });
+                </script>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-lg-12">
+                <input type="submit" value="Submit" class="btn btn-success" onclick="return UpdateConfFancyBox()" />
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    function UpdateConfFancyBox() {
+        var r = confirm("Confirm submit this Branch?");
+        if (r == true) return true;
+        else return false;
+    }
+
+    var initialLocation;
+    var kl = new google.maps.LatLng(3.316, 101.48);
+    var browserSupportFlag = new Boolean();
+    //var infowindow = new google.maps.InfoWindow();
+
+    function PostLocate() {
+        var line = $('#AddressLine1').val();
+        var zipcode = $('#PostCode').val();
+        var city = $('#cityDropDown').data("kendoComboBox").text();
+        if (city == null) {
+            city = "";
+        }
+        var address = line + "," + zipcode + "," + city;
+
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                if (marker == null) {
+                    marker = createMarker(results[0].geometry.location, "name", $('#Name').val());
+                }
+                else {
+                    marker.setPosition(results[0].geometry.location);
+                }
+
+                //assign coordinate value as hidden data 
+                $('#TempLatLong').val(results[0].geometry.location.toString());
+
+            } else {
+                alert("Location not found ");
+            }
+        });
+
+    }
+    function createMarker(latlng, name, html) {
+        var contentString = html;
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            zIndex: Math.round(latlng.lat() * -100000) << 5
+        });
+
+        google.maps.event.addListener(marker, 'click', function () {
+            //infowindow.setContent(contentString);
+            //infowindow.open(map, marker);
+        });
+        google.maps.event.trigger(marker, 'click');
+        return marker;
+    }
+    function initialize() {
+        var myOptions = {
+            zoom: 6,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+        //geocode
+        var line = $('#AddressLine1').val();
+        var zipcode = $('#PostCode').val();
+        var state = '';
+        var city = $('#cityDropDown').data("kendoComboBox").text();
+
+        var address = line + "," + zipcode;
+
+        var geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                map.setZoom(15);
+
+                //initialize marker on current position
+                marker = createMarker(results[0].geometry.location, "name", $('#Name').val());
+
+                //set default modified coord and initially save this coordinate to db
+                $('#TempLatLong').val(results[0].geometry.location);
+
+            } else {
+                //alert("Location not found , loading nearby area on map");
+
+                //use geolocation if no location found based on typed address
+                if (navigator.geolocation) {
+                    browserSupportFlag = true;
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        map.setCenter(initialLocation);
+                        map.setZoom(16);
+
+                        //initialize marker on current position
+                        marker = createMarker(initialLocation, "name", $('#Name').val());
+                    }, function () {
+                        handleNoGeolocation(browserSupportFlag);
+                    });
+                } else {
+                    browserSupportFlag = false;
+                    handleNoGeolocation(browserSupportFlag);
+                }
+
+                //set default modified coord
+                $('#TempLatLong').val(kl);
+
+
+                //reinitialize marker in case no result found 
+                marker = new google.maps.Marker();
+            }
+        });
+
+        //place a marker on the map when user click map , and then modify the coordinate stored in hidden field for update use later
+        google.maps.event.addListener(map, 'click', function (event) {
+
+            //clear default marker on the map
+            marker.setMap(null);
+
+            //call function to create marker
+            if (marker) {
+                marker.setMap(null);
+                marker = null;
+            }
+
+            var geocoder = new google.maps.Geocoder();
+            var addr = "null";
+
+            geocoder.geocode({ 'latLng': event.latLng }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[1]) {
+                        //to get city *callback(results[1].address_components[1].long_name);
+                        addr = results[1].formatted_address;
+                        marker = createMarker(event.latLng, "name", $('#Name').val());
+
+                        //assign coordinate value as hidden data 
+                        $('#TempLatLong').val(event.latLng.toString());
+
+                    }
+                } else {
+                    addr = "still null";
+                    marker = createMarker(event.latLng, "name", $('#Name').val());
+                }
+            });
+        });
+    }
+</script>
